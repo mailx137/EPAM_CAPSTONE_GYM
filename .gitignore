@@ -1,0 +1,39 @@
+# Spring Boot application properties
+application.properties
+application.yml
+
+# VSCode settings
+.vscode/
+
+# JetBrains IDEs (IntelliJ IDEA, etc.)
+.idea/
+*.iml
+
+# Java build output
+/out/
+target/
+bin/
+build/
+
+# Maven
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Others
+*.class
+*.jar
+*.war
+*.ear
