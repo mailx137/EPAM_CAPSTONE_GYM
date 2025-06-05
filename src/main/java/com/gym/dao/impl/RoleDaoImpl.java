@@ -56,6 +56,22 @@ public class RoleDaoImpl implements RoleDao, JdbcCleanup {
 
     @Override
     public void addRoleToAccount(long id, RoleType roleType) {
+        String sql = "INSERT IGNORE INTO accounts_roles (account_id, role_id) " +
+                     "VALUES (?, (SELECT id FROM roles WHERE name = ?))";
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            stmt.setString(2, roleType.name());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding role to account: " + id + ", role: " + roleType, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
     }
 }
