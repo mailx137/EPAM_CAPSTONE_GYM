@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class Role {
     private long id;
-    private RoleType roleType;
+    private RoleType name;
 }
