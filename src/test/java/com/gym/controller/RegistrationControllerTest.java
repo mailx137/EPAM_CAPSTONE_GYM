@@ -10,21 +10,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import com.gym.enums.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.gym.dto.request.RegisterFormDto;
 import com.gym.service.AccountService;
 
-class RegistrationControllerTest extends AbstractWebMvcTest {
-    private AccountService accountService = Mockito.mock(AccountService.class);
+@ExtendWith(MockitoExtension.class)
+class RegistrationControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private AccountService accountService;
+
+    private RegistrationController registrationController;
 
     @BeforeEach
     void setUp() {
-        RegistrationController controller = new RegistrationController(accountService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        registrationController = new RegistrationController(accountService);
+        mockMvc = MockMvcBuilders.standaloneSetup(registrationController).build();
     }
 
     @Test
@@ -45,7 +57,7 @@ class RegistrationControllerTest extends AbstractWebMvcTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/login"));
 
-        verify(accountService).registerAccount(Mockito.any(RegisterFormDto.class));
+        verify(accountService).registerAccount(any(RegisterFormDto.class), any(RoleType.class));
     }
 
     @Test
@@ -58,7 +70,7 @@ class RegistrationControllerTest extends AbstractWebMvcTest {
                 .andExpect(model().attributeHasFieldErrors("registerForm", "email", "password", "confirmPassword"))
                 .andExpect(view().name("register/form"));
 
-        verify(accountService, never()).registerAccount(any());
+        verify(accountService, never()).registerAccount(any(), any());
 
     }
 }

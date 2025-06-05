@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 @Service
 public class AccountService {
-    private final AccountDao accountDao;
-    private final MessageSource messageSource;
+    private AccountDao accountDao;
+    private MessageSource messageSource;
     private PasswordEncoder passwordEncoder;
     private RoleDao roleDao;
     private WalletDao walletDao;
@@ -46,18 +45,15 @@ public class AccountService {
         Account newAccount = new Account();
         newAccount.setEmail(registerForm.getEmail());
         newAccount.setPassword(passwordEncoder.encode(registerForm.getPassword()));
+        newAccount.setEmailConfirmed(false);
+        newAccount.setBlocked(false);
 
         accountDao.insert(newAccount);
 
-        Optional<Account> createdAccount = Optional.ofNullable(accountDao.findByEmail(registerForm.getEmail()).orElseThrow(() -> {
-            throw new RuntimeException("Account not found after creation");
-        }));
-
-        Account account = createdAccount.get();
-        roleDao.addRoleToAccount(account.getId(), roleType);
+        roleDao.addRoleToAccount(newAccount.getId(), roleType);
 
         if (roleType.equals(RoleType.CLIENT)) {
-            walletDao.createWallet(account.getId());
+            walletDao.createWallet(newAccount.getId());
         }
     }
 }

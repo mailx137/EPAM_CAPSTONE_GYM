@@ -9,6 +9,8 @@ import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,25 +43,30 @@ class AccountServiceTest extends AbstractServiceTest {
     @Mock
     private MessageSource messageSource;
 
-    @Test
-    void testRegisterAccountSuccess() {
+    @ParameterizedTest
+    @EnumSource(RoleType.class)
+    void testRegisterAccountSuccess(RoleType roleType) {
         RegisterFormDto registerFormDto = new RegisterFormDto();
         registerFormDto.setEmail("test@email.com");
         registerFormDto.setPassword("password123");
         registerFormDto.setConfirmPassword("password123");
 
-        when(accountDao.findByEmail(registerFormDto.getEmail()))
-                .thenReturn(Optional.empty());
+        // Set up the emailExists mock instead of findByEmail
+        when(accountDao.emailExists(registerFormDto.getEmail()))
+                .thenReturn(false);
         when(passwordEncoder.encode(registerFormDto.getPassword()))
                 .thenReturn("qwerty123");
 
         doAnswer(invocation -> {
             Account acc = invocation.getArgument(0);
             acc.setId(1L);
+            LocalDateTime now = LocalDateTime.now();
+            acc.setCreatedAt(now);
+            acc.setUpdatedAt(now);
             return null;
         }).when(accountDao).insert(any(Account.class));
 
-        accountService.registerAccount(registerFormDto, RoleType.ADMIN);
+        accountService.registerAccount(registerFormDto, roleType);
 
         ArgumentCaptor<Account> accountCaptor = ArgumentCaptor.forClass(Account.class);
         verify(accountDao).insert(accountCaptor.capture());
@@ -77,9 +84,15 @@ class AccountServiceTest extends AbstractServiceTest {
         assertTrue(savedAccount.getUpdatedAt().isBefore(LocalDateTime.now()));
 
         verify(passwordEncoder).encode(registerFormDto.getPassword());
-        verify(accountDao, times(2)).findByEmail(registerFormDto.getEmail());
-        verify(roleDao).addRoleToAccount(savedAccount.getId(), RoleType.ADMIN);
-        verify(walletDao).createWallet(savedAccount.getId());
+        verify(accountDao).emailExists(registerFormDto.getEmail());
+        verify(accountDao, never()).findByEmail(registerFormDto.getEmail());
+        verify(roleDao).addRoleToAccount(savedAccount.getId(), roleType);
+
+        if (roleType == RoleType.CLIENT) {
+            verify(walletDao).createWallet(savedAccount.getId());
+        } else {
+            verify(walletDao, never()).createWallet(anyLong());
+        }
     }
 
     @Test

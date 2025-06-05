@@ -24,6 +24,32 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
 
     @Override
     public void insert(Account account) {
+        String sql = "INSERT INTO accounts (email, password, email_confirmed, blocked, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, account.getEmail());
+            stmt.setString(2, account.getPassword());
+            stmt.setBoolean(3, account.isEmailConfirmed());
+            stmt.setBoolean(4, account.isBlocked());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        account.setId(generatedKeys.getLong(1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error inserting account: " + account.getEmail(), e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
 
     }
 
@@ -85,3 +111,4 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
         return false;
     }
 }
+
