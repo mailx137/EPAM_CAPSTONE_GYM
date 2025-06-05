@@ -5,14 +5,15 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
+import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.MessageSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -58,7 +59,7 @@ class AccountServiceTest extends AbstractServiceTest {
             return null;
         }).when(accountDao).insert(any(Account.class));
 
-        accountService.registerAccount(registerFormDto);
+        accountService.registerAccount(registerFormDto, RoleType.ADMIN);
 
         ArgumentCaptor<Account> accountCaptor = ArgumentCaptor.forClass(Account.class);
         verify(accountDao).insert(accountCaptor.capture());
@@ -75,9 +76,10 @@ class AccountServiceTest extends AbstractServiceTest {
         assertTrue(savedAccount.getCreatedAt().isBefore(LocalDateTime.now()));
         assertTrue(savedAccount.getUpdatedAt().isBefore(LocalDateTime.now()));
 
+        verify(passwordEncoder).encode(registerFormDto.getPassword());
         verify(accountDao, times(2)).findByEmail(registerFormDto.getEmail());
-        verify(roleDao).assignRoleToAccount(1L);
-        verify(walletDao).createWalletForAccount(1L);
+        verify(roleDao).addRoleToAccount(savedAccount.getId(), RoleType.ADMIN);
+        verify(walletDao).createWallet(savedAccount.getId());
     }
 
     @Test
@@ -92,6 +94,6 @@ class AccountServiceTest extends AbstractServiceTest {
                 any()
         )).thenReturn("Email already exists");
 
-        assertThrows(AccountAlreadyExistsException.class, () -> accountService.registerAccount(registerFormDto));
+        assertThrows(AccountAlreadyExistsException.class, () -> accountService.registerAccount(registerFormDto, RoleType.CLIENT));
     }
 }

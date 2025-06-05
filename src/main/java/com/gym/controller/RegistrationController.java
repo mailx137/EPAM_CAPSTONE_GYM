@@ -1,5 +1,6 @@
 package com.gym.controller;
 
+import com.gym.enums.RoleType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,7 @@ public class RegistrationController {
             return "register/form";
         }
         
-        accountService.registerAccount(registerForm);
+        accountService.registerAccount(registerForm, RoleType.CLIENT);
         return "redirect:/login";
     }
 }
