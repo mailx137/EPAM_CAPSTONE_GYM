@@ -39,4 +39,5 @@ public class RoleDaoTest extends AbstractDaoTest {
         assertEquals(3, roles.size());
         assertTrue(roles.stream().anyMatch(role -> role.getName() == RoleType.TRAINER));
     }
+
 }

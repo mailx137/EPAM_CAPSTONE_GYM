@@ -48,4 +48,14 @@ public class AccountDaoTest extends AbstractDaoTest {
     void testEmailExistsSuccess_ReturnFalse() {
         assertFalse(accountDao.emailExists("test@test.com"));
     }
+
+    @Sql (statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (2, 'test2@test.com', 'password123')",
+    })
+    @Test
+    void testGetCount() {
+        int count = accountDao.getCount();
+        assertEquals(2, count);
+    }
 }

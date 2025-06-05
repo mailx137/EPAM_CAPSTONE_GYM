@@ -5,12 +5,17 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
+import com.gym.dto.response.AdminAccountListDto;
+import com.gym.dto.response.Paginator;
 import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +23,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +57,6 @@ class AccountServiceTest extends AbstractServiceTest {
         registerFormDto.setPassword("password123");
         registerFormDto.setConfirmPassword("password123");
 
-        // Set up the emailExists mock instead of findByEmail
         when(accountDao.emailExists(registerFormDto.getEmail()))
                 .thenReturn(false);
         when(passwordEncoder.encode(registerFormDto.getPassword()))
@@ -108,5 +113,18 @@ class AccountServiceTest extends AbstractServiceTest {
         )).thenReturn("Email already exists");
 
         assertThrows(AccountAlreadyExistsException.class, () -> accountService.registerAccount(registerFormDto, RoleType.CLIENT));
+    }
+
+    @Test
+    void name() {
+
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,2",
+            "2,2"
+    })
+    void testGetPaginatedAdminAccountList(int page, int size) {
     }
 }

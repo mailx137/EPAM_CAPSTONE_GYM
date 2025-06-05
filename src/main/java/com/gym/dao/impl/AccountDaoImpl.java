@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -109,6 +110,63 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
         }
 
         return false;
+    }
+
+    @Override
+    public List<Account> getAccountsByPage(int page, int size) {
+        String sql = "SELECT * FROM accounts ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, size);
+            stmt.setInt(2, (page - 1) * size);
+            rs = stmt.executeQuery();
+
+            List<Account> accounts = new java.util.ArrayList<>();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setId(rs.getLong("id"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setEmailConfirmed(rs.getBoolean("email_confirmed"));
+                account.setBlocked(rs.getBoolean("blocked"));
+                account.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                account.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                accounts.add(account);
+            }
+            return accounts;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving accounts by page: " + page, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public int getCount() {
+        String sql = "SELECT COUNT(*) FROM accounts";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error getting account count", e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+        return 0;
     }
 }
 
