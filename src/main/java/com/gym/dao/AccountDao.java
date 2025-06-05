@@ -1,5 +1,6 @@
 package com.gym.dao;
 
+import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.model.Account;
 
 import java.util.List;
@@ -15,4 +16,10 @@ public interface AccountDao {
     List<Account> getAccountsByPage(int page, int size);
 
     int getCount();
+
+    Optional<AccountWithRolesAndWallet> getAccountWithRolesAndWalletById(long id);
+
+    List<AccountWithRolesAndWallet> getAccountsWithRolesAndWallet(int page, int size);
+
+    void deleteById(long id);
 }

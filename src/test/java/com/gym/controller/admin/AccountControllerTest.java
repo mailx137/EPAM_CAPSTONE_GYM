@@ -1,7 +1,7 @@
 package com.gym.controller.admin;
 
 import com.gym.config.WebConfig;
-import com.gym.dto.response.AdminAccountListDto;
+import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.dto.response.Paginator;
 import com.gym.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class AccountControllerTest {
     @Test
     void testShowAccountList() throws Exception {
         // Setup account service mock to return paginated data
-        Paginator<AdminAccountListDto> accountsPaginator = new Paginator<>(0, 1, 10, List.of(new AdminAccountListDto()));
+        Paginator<AccountWithRolesAndWallet> accountsPaginator = new Paginator<>(0, 1, 10, List.of(new AccountWithRolesAndWallet()));
         when(accountService.getPaginatedAdminAccountList(1, 5)).thenReturn(accountsPaginator);
 
         mockMvc.perform(get("/admin/accounts"))
@@ -49,7 +49,7 @@ public class AccountControllerTest {
                 .andExpect(model().attribute("accounts",
                         allOf(
                                 instanceOf(Paginator.class),
-                                hasProperty("items", everyItem(instanceOf(AdminAccountListDto.class)))
+                                hasProperty("items", everyItem(instanceOf(AccountWithRolesAndWallet.class)))
                         )))
                 .andExpect(view().name("admin/account/list"));
     }

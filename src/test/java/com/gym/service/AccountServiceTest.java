@@ -5,17 +5,12 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
-import com.gym.dto.response.AdminAccountListDto;
-import com.gym.dto.response.Paginator;
 import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,8 +18,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -116,15 +109,14 @@ class AccountServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void name() {
+    void testDeleteAccount() {
+        Account account = new Account();
+        account.setId(1L);
+        account.setEmail("test@test.com");
 
-    }
+        doNothing().when(accountDao).deleteById(account.getId());
 
-    @ParameterizedTest
-    @CsvSource({
-            "1,2",
-            "2,2"
-    })
-    void testGetPaginatedAdminAccountList(int page, int size) {
+        accountService.deleteAccount(account.getId());
+        verify(accountDao, times(1)).deleteById(account.getId());
     }
 }

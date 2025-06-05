@@ -4,7 +4,7 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
-import com.gym.dto.response.AdminAccountListDto;
+import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.dto.response.Paginator;
 import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.List;
 
 @Service
 public class AccountService {
@@ -60,7 +59,19 @@ public class AccountService {
         }
     }
 
-    public Paginator<AdminAccountListDto> getPaginatedAdminAccountList(Integer page, Integer size) {
-        return null;
+    public Paginator<AccountWithRolesAndWallet> getPaginatedAdminAccountList(Integer page, Integer size) {
+        if (page == null || size == null || page < 1 || size < 1) {
+            throw new IllegalArgumentException("Page and size must be greater than 0");
+        }
+        return new Paginator<>(
+                accountDao.getCount(),
+                page,
+                size,
+                accountDao.getAccountsWithRolesAndWallet(page, size)
+        );
+    }
+
+    public void deleteAccount(long id) {
+        accountDao.deleteById(id);
     }
 }
