@@ -4,6 +4,8 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
+import com.gym.dto.response.AdminAccountListDto;
+import com.gym.dto.response.Paginator;
 import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
@@ -55,5 +57,9 @@ public class AccountService {
         if (roleType.equals(RoleType.CLIENT)) {
             walletDao.createWallet(newAccount.getId());
         }
+    }
+
+    public Paginator<AdminAccountListDto> getPaginatedAdminAccountList(Integer page, Integer size) {
+        return null;
     }
 }

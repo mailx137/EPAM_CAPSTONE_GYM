@@ -1,30 +1,31 @@
 package com.gym.controller;
 
+import com.gym.config.WebConfig;
+import com.gym.dto.request.RegisterFormDto;
+import com.gym.enums.RoleType;
+import com.gym.service.AccountService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import com.gym.enums.RoleType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.gym.dto.request.RegisterFormDto;
-import com.gym.service.AccountService;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = {WebConfig.class})
 class RegistrationControllerTest {
 
     private MockMvc mockMvc;
@@ -55,9 +56,9 @@ class RegistrationControllerTest {
     @Test
     void testRegisterSuccess() throws Exception {
         mockMvc.perform(post("/register")
-                .param("email", "test@example.com")
-                .param("password", "password")
-                .param("confirmPassword", "password"))
+                        .param("email", "test@example.com")
+                        .param("password", "password")
+                        .param("confirmPassword", "password"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/login"));
 
@@ -67,9 +68,9 @@ class RegistrationControllerTest {
     @Test
     void testRegisterValidationError() throws Exception {
         mockMvc.perform(post("/register")
-                .param("email", "")
-                .param("password", "short")
-                .param("confirmPassword", ""))
+                        .param("email", "")
+                        .param("password", "short")
+                        .param("confirmPassword", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("registerForm", "email", "password", "confirmPassword"))
                 .andExpect(view().name("register/form"));
