@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{shared/layout}">
+
+<head>
+    <title th:text="#{titles.login}">Login</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="p-4 rounded shadow-lg bg-white" style="width: 100%; max-width: 500px;">
+            <h2 class="mb-4 text-center" th:text="#{titles.login}">Login</h2>
+
+            <!-- Login form -->
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label" th:text="#{labels.email}">Email</label>
+                    <input type="text" id="username" name="username" class="form-control" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label" th:text="#{labels.password}">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+
+                <!-- Error message -->
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    <span th:text="#{login.error}">Invalid email or password.</span>
+                </div>
+
+                <!-- Logout message -->
+                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                    <span th:text="#{logout.success}">You have been logged out.</span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" th:text="#{buttons.login}">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

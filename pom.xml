@@ -195,6 +195,7 @@
                     <webApp>
                         <contextPath>/</contextPath>
                     </webApp>
+                    <scanIntervalSeconds>3</scanIntervalSeconds>
                 </configuration>
             </plugin>
 

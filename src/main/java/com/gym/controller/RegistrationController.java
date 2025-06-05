@@ -1,6 +1,9 @@
 package com.gym.controller;
 
 import com.gym.enums.RoleType;
+import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,14 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.gym.dto.request.RegisterFormDto;
 import com.gym.service.AccountService;
 
-import jakarta.validation.Valid;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RegistrationController {
     private AccountService accountService;
+    private MessageSource messageSource;
 
-    public RegistrationController(AccountService accountService) {
+    public RegistrationController(AccountService accountService, MessageSource messageSource) {
         this.accountService = accountService;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -35,12 +40,18 @@ public class RegistrationController {
     /* Handles the registration form submission */
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("registerForm") RegisterFormDto registerForm,
-            BindingResult bindingResult, Model model) {
+                           BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
             return "register/form";
         }
-        
+
         accountService.registerAccount(registerForm, RoleType.CLIENT);
+
+        if (messageSource != null) {
+            String successMessage = messageSource.getMessage("alert.account.created.success", null, LocaleContextHolder.getLocale());
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        }
+
         return "redirect:/login";
     }
 }

@@ -1,11 +1,13 @@
 package com.gym.dto.request;
 
+import com.gym.validation.annotation.PasswordConfirmation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
+@PasswordConfirmation
 public class RegisterFormDto {
     @NotBlank
     @Email
@@ -18,3 +20,4 @@ public class RegisterFormDto {
     @NotBlank
     private String confirmPassword;
 }
+

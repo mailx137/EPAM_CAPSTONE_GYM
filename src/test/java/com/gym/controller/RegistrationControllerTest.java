@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -31,11 +32,14 @@ class RegistrationControllerTest {
     @Mock
     private AccountService accountService;
 
+    @Mock
+    private MessageSource messageSource;
+
     private RegistrationController registrationController;
 
     @BeforeEach
     void setUp() {
-        registrationController = new RegistrationController(accountService);
+        registrationController = new RegistrationController(accountService, messageSource);
         mockMvc = MockMvcBuilders.standaloneSetup(registrationController).build();
     }
 
