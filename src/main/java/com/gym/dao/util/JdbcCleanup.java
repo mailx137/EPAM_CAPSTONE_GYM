@@ -1,4 +1,4 @@
-package com.gym.dao;
+package com.gym.dao.util;
 
 import com.gym.util.Loggable;
 import org.springframework.jdbc.datasource.DataSourceUtils;

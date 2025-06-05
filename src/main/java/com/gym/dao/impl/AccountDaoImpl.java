@@ -2,7 +2,7 @@ package com.gym.dao.impl;
 
 
 import com.gym.dao.AccountDao;
-import com.gym.dao.JdbcCleanup;
+import com.gym.dao.util.JdbcCleanup;
 import com.gym.model.Account;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
@@ -58,5 +58,30 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean emailExists(String mail) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM accounts WHERE email = ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, mail);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if email exists: " + mail, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+
+        return false;
     }
 }

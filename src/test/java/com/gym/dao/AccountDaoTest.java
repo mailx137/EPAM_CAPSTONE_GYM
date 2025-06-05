@@ -35,4 +35,17 @@ public class AccountDaoTest extends AbstractDaoTest {
         assertTrue(account.getCreatedAt().isBefore(LocalDateTime.now()));
         assertTrue(account.getUpdatedAt().isBefore(LocalDateTime.now()));
     }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
+    })
+    @Test
+    void testEmailExistsSuccess_ReturnTrue() {
+        assertTrue(accountDao.emailExists("test@test.com"));
+    }
+
+    @Test
+    void testEmailExistsSuccess_ReturnFalse() {
+        assertFalse(accountDao.emailExists("test@test.com"));
+    }
 }

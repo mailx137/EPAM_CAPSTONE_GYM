@@ -8,4 +8,6 @@ public interface AccountDao {
     void insert(Account account);
 
     Optional<Account> findByEmail(String email);
+
+    boolean emailExists(String mail);
 }

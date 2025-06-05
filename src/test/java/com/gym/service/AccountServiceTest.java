@@ -5,6 +5,7 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
+import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -73,5 +74,15 @@ class AccountServiceTest extends AbstractServiceTest {
         verify(accountDao, times(2)).findByEmail(registerFormDto.getEmail());
         verify(roleDao).assignRoleToAccount(1L);
         verify(walletDao).createWalletForAccount(1L);
+    }
+
+    @Test
+    void testRegisterAccountEmailAlreadyExists() {
+        RegisterFormDto registerFormDto = new RegisterFormDto();
+        registerFormDto.setEmail("test@test.com");
+
+//        when(accountDao.findByEmail(registerFormDto.getEmail())).thenReturn(true);
+
+        assertThrows(AccountAlreadyExistsException.class, () -> accountService.registerAccount(registerFormDto));
     }
 }
