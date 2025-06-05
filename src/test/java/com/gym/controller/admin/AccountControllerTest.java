@@ -61,7 +61,7 @@ public class AccountControllerTest {
     @Test
     void testDeleteAccount() throws Exception {
         String expectedMessage = messageSource.getMessage("alert.account.delete.success", null, LocaleContextHolder.getLocale());
-        mockMvc.perform(get("/admin/accounts/delete/1"))
+        mockMvc.perform(get("/admin/account/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/accounts"))
                 .andExpect(flash().attribute("successMessage", expectedMessage));

@@ -3,13 +3,14 @@ package com.gym.controller.admin;
 import com.gym.service.AccountService;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@PreAuthorize("hasRole('ADMIN')")
 @Controller
-@RequestMapping("/admin/accounts")
 public class AccountController {
     private AccountService accountService;
     private MessageSource messageSource;
@@ -19,7 +20,7 @@ public class AccountController {
         this.messageSource = messageSource;
     }
 
-    @GetMapping
+    @GetMapping("/admin/accounts")
     public String showAccountsList(@RequestParam(required = false, defaultValue = "1") Integer page,
                                    @RequestParam(required = false, defaultValue = "5") Integer size,
                                    Model model) {
@@ -27,7 +28,7 @@ public class AccountController {
         return "admin/account/list";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/admin/account/delete/{id}")
     public String deleteAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String expectedMessage = messageSource.getMessage("alert.account.delete.success", null, LocaleContextHolder.getLocale());
         accountService.deleteAccount(id);
