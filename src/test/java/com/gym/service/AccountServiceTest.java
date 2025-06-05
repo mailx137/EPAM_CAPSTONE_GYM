@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.MessageSource;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,6 +36,9 @@ class AccountServiceTest extends AbstractServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private MessageSource messageSource;
 
     @Test
     void testRegisterAccountSuccess() {
@@ -81,7 +85,12 @@ class AccountServiceTest extends AbstractServiceTest {
         RegisterFormDto registerFormDto = new RegisterFormDto();
         registerFormDto.setEmail("test@test.com");
 
-//        when(accountDao.findByEmail(registerFormDto.getEmail())).thenReturn(true);
+        when(accountDao.emailExists(registerFormDto.getEmail())).thenReturn(true);
+        when(messageSource.getMessage(
+                eq("validation.account.email.already_exists"),
+                any(),
+                any()
+        )).thenReturn("Email already exists");
 
         assertThrows(AccountAlreadyExistsException.class, () -> accountService.registerAccount(registerFormDto));
     }
