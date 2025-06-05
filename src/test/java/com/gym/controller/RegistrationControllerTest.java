@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -67,6 +68,8 @@ class RegistrationControllerTest {
 
     @Test
     void testRegisterValidationError() throws Exception {
+
+
         mockMvc.perform(post("/register")
                         .param("email", "")
                         .param("password", "short")

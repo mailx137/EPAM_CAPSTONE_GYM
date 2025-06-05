@@ -36,7 +36,7 @@
                         <span class="badge text-bg-primary" th:each="role : ${account.roles}" th:text="${role}">Primary</span>
                     </td>
                     <td>
-                        <form th:action="@{/admin/accounts/{id}(id=${account.id})}" method="post" style="display:inline;">
+                        <form th:action="@{/admin/accounts/delete/{id}(id=${account.id})}" method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete"/>
                             <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>
                         </form>
