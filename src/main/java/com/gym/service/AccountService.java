@@ -71,6 +71,7 @@ public class AccountService {
         );
     }
 
+    @Transactional(rollbackFor = SQLException.class)
     public void deleteAccount(long id) {
         accountDao.deleteById(id);
     }

@@ -3,7 +3,9 @@ package com.gym.service;
 import com.gym.dao.RoleDao;
 import com.gym.model.Role;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -18,6 +20,7 @@ public RoleService(RoleDao roleDao) {
         return roleDao.getRolesByAccountId(accountId);
     }
 
+    @Transactional(rollbackFor = SQLException.class)
     public void updateRolesByAccountId(long id, List<String> roles) {
         List<Long> roleIds = roleDao.getAllRoles().stream()
                 .filter(role -> roles.contains(role.getName().name()))
