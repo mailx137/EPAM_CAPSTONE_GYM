@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +84,9 @@ public class CycleService {
         cycle.setPrice(cycleFormDto.getPrice());
 
         cycleDao.update(cycle);
+    }
+
+    public List<Cycle> getPublishedCycles() {
+        return cycleDao.getPublishedCycles();
     }
 }

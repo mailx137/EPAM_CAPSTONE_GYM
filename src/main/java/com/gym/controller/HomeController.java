@@ -2,7 +2,9 @@ package com.gym.controller;
 
 import java.util.Locale;
 
+import com.gym.service.CycleService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
@@ -13,8 +15,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class HomeController {
+    private CycleService cycleService;
+
+    public HomeController(CycleService cycleService) {
+        this.cycleService = cycleService;
+    }
+
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("cycles", cycleService.getPublishedCycles());
         return "home";
     }
 

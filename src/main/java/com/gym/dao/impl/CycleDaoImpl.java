@@ -3,12 +3,10 @@ package com.gym.dao.impl;
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
 import com.gym.model.Cycle;
-import com.mysql.cj.protocol.Resultset;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -187,6 +185,40 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             }
         } catch (Exception e) {
             throw new RuntimeException("Error updating cycle with id " + cycle.getId(), e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public List<Cycle> getPublishedCycles() {
+        String sql = "SELECT * FROM cycles WHERE published = true";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            List<Cycle> cycles = new ArrayList<>();
+
+            while (rs.next()) {
+                Cycle cycle = new Cycle();
+                cycle.setId(rs.getLong("id"));
+                cycle.setName(rs.getString("name"));
+                cycle.setDescription(rs.getString("description"));
+                cycle.setDurationInDays(rs.getInt("duration_in_days"));
+                cycle.setPublished(rs.getBoolean("published"));
+                cycle.setPrice(rs.getBigDecimal("price"));
+                cycle.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                cycle.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                cycles.add(cycle);
+            }
+            return cycles;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching published cycles", e);
         } finally {
             cleanupResources(rs, stmt, conn, dataSource);
         }

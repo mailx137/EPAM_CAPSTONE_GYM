@@ -17,4 +17,6 @@ public interface CycleDao {
     Optional<Cycle> findById(long id);
 
     void update(Cycle cycle);
+
+    List<Cycle> getPublishedCycles();
 }
