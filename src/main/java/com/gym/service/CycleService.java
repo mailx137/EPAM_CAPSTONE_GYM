@@ -26,4 +26,8 @@ public class CycleService {
                 cycleDao.getCyclesByPage(page, size)
         );
     }
+
+    public void deleteCycle(long id) {
+        cycleDao.deleteById(id);
+    }
 }

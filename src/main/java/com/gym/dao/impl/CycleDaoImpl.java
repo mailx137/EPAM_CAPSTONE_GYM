@@ -83,4 +83,25 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public void deleteById(long id) {
+        String sql = "DELETE FROM cycles WHERE id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Cycle with id " + id + " not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting cycle with id " + id, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
 }

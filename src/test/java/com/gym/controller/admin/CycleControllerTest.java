@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +23,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,10 +38,12 @@ public class CycleControllerTest {
     @Mock
     private CycleService cycleService;
 
+    @Mock
+    private MessageSource messageSource;
 
     @BeforeEach
     void setUp() {
-        cycleController = new CycleController(cycleService);
+        cycleController = new CycleController(cycleService, messageSource);
         mockMvc = MockMvcBuilders.standaloneSetup(cycleController).build();
     }
 
@@ -56,6 +61,17 @@ public class CycleControllerTest {
                                 hasProperty("items", everyItem(instanceOf(Cycle.class)))
                         )))
                 .andExpect(view().name("admin/cycle/list"));
+    }
+
+    @Test
+    void testDeleteAccount() throws Exception {
+        String expectedMessage = messageSource.getMessage("alert.cycle.delete.success", null, LocaleContextHolder.getLocale());
+        mockMvc.perform(delete("/admin/cycle/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/cycles"))
+                .andExpect(flash().attribute("successMessage", expectedMessage));
+        verify(cycleService, times(1)).deleteCycle(1L);
+
     }
 
 }

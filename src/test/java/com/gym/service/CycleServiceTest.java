@@ -2,6 +2,7 @@ package com.gym.service;
 
 import com.gym.dao.CycleDao;
 import com.gym.dto.response.Paginator;
+import com.gym.model.Account;
 import com.gym.model.Cycle;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,5 +31,14 @@ public class CycleServiceTest extends AbstractServiceTest{
         assertEquals(selectedCycles.getItems().size(), cycles.size());
 
         verify(cycleDao, times(1)).getCyclesByPage(1, 10);
+    }
+
+    @Test
+    void testDeleteCycle() {
+        Cycle cycle = new Cycle();
+        cycle.setId(1L);
+        doNothing().when(cycleDao).deleteById(cycle.getId());
+        cycleService.deleteCycle(cycle.getId());
+        verify(cycleDao, times(1)).deleteById(cycle.getId());
     }
 }

@@ -8,4 +8,6 @@ public interface CycleDao {
     List<Cycle> getCyclesByPage(int page, int size);
 
     int getCount();
+
+    void deleteById(long id);
 }
