@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CycleDao {
     List<Cycle> getCyclesByPage(int page, int size);
+
+    int getCount();
 }
