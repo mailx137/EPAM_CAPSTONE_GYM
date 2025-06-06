@@ -19,7 +19,7 @@
                     <option th:each="role : ${availableRoles}"
                             th:value="${role}"
                             th:text="${role}"
-                            th:selected="${}">
+                            th:selected="${accountRoles.contains(role)}">
                     </option>
                 </select>
             </div>

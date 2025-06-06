@@ -9,4 +9,8 @@ public interface RoleDao {
     List<Role> getRolesByAccountId(long accountId);
 
     void addRoleToAccount(long id, RoleType roleType);
+
+    List<Role> getAllRoles();
+
+    void updateRolesByAccountId(int accountId, List<Long> roleIds);
 }

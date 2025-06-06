@@ -74,4 +74,71 @@ public class RoleDaoImpl implements RoleDao, JdbcCleanup {
             cleanupResources(null, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public List<Role> getAllRoles() {
+        String sql = "SELECT id, name FROM roles";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            List<Role> roles = new ArrayList<>();
+            while (rs.next()) {
+                Role role = new Role();
+                role.setId(rs.getLong("id"));
+                role.setName(RoleType.valueOf(rs.getString("name")));
+                roles.add(role);
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching all roles", e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public void updateRolesByAccountId(int accountId, List<Long> roleIds) {
+        String deleteSql = "DELETE FROM accounts_roles WHERE account_id = ?";
+        String insertSql = "INSERT INTO accounts_roles (account_id, role_id) VALUES (?, ?)";
+        Connection conn = null;
+        PreparedStatement deleteStmt = null;
+        PreparedStatement insertStmt = null;
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            conn.setAutoCommit(false);
+
+            // Delete existing roles for the account
+            deleteStmt = conn.prepareStatement(deleteSql);
+            deleteStmt.setInt(1, accountId);
+            deleteStmt.executeUpdate();
+
+            // Insert new roles
+            insertStmt = conn.prepareStatement(insertSql);
+            for (Long roleId : roleIds) {
+                insertStmt.setInt(1, accountId);
+                insertStmt.setLong(2, roleId);
+                insertStmt.addBatch();
+            }
+            insertStmt.executeBatch();
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackEx) {
+                    throw new RuntimeException("Error rolling back transaction", rollbackEx);
+                }
+            }
+            throw new RuntimeException("Error updating roles for account: " + accountId, e);
+        } finally {
+            cleanupResources(null, deleteStmt, conn, dataSource);
+            cleanupResources(null, insertStmt, null, null);
+        }
+    }
 }

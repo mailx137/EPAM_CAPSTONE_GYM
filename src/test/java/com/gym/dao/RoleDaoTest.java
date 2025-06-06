@@ -1,11 +1,13 @@
 package com.gym.dao;
 
 import com.gym.enums.RoleType;
+import com.gym.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql(statements = {
         "INSERT IGNORE INTO roles (id, name) VALUES (1, 'ADMIN')",
@@ -38,6 +40,25 @@ public class RoleDaoTest extends AbstractDaoTest {
 
         assertEquals(3, roles.size());
         assertTrue(roles.stream().anyMatch(role -> role.getName() == RoleType.TRAINER));
+    }
+
+    @Test
+    void testGetAllRolesSuccess_ReturnAllRoles() {
+        List<Role> roles = roleDao.getAllRoles();
+        assertEquals(3, roles.size());
+    }
+
+    @Test
+    void testUpdateRolesByAccountIdSuccess() {
+        List<Long> roleIds = List.of(2L, 3L);
+        roleDao.updateRolesByAccountId(1, roleIds);
+
+        List<Role> roles = roleDao.getRolesByAccountId(1);
+        assertEquals(2, roles.size());
+
+        assertTrue(roles.stream().anyMatch(role -> role.getName() == RoleType.CLIENT));
+        assertTrue(roles.stream().anyMatch(role -> role.getName() == RoleType.TRAINER));
+        assertFalse(roles.stream().anyMatch(role -> role.getName() == RoleType.ADMIN));
     }
 
 }
