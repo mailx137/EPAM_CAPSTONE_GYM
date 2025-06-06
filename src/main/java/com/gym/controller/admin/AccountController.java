@@ -1,6 +1,7 @@
 package com.gym.controller.admin;
 
 import com.gym.enums.RoleType;
+import com.gym.model.Role;
 import com.gym.service.AccountService;
 import com.gym.service.RoleService;
 import org.springframework.context.MessageSource;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 
 @PreAuthorize("hasRole('ADMIN')")
 @Controller
@@ -44,9 +46,11 @@ public class AccountController {
 
     @GetMapping("/admin/account/change_roles/{id}")
     public String changeRoles(@PathVariable Long id, Model model) {
+        List<String> accountRoles = roleService.getRolesByAccountId(id).stream().map(role -> role.getName().name()).toList();
+        List<String> availableRoles = Arrays.stream(RoleType.values()).map(RoleType::name).toList();
         model.addAttribute("accountId", id);
-        model.addAttribute("accountRoles", roleService.getRolesByAccountId(id));
-        model.addAttribute("allRoles", Arrays.stream(RoleType.values()).map(Enum::name).toList());
+        model.addAttribute("accountRoles", accountRoles);
+        model.addAttribute("availableRoles", availableRoles);
         return "admin/account/change_roles";
     }
 }

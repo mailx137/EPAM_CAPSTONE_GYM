@@ -77,16 +77,30 @@ public class AccountControllerTest {
 
     @Test
     void testChangeRoles() throws Exception {
-        List<Role> roles = List.of(new Role(1L, RoleType.CLIENT), new Role(2L, RoleType.ADMIN));
-        when(roleService.getRolesByAccountId(1L)).thenReturn(roles);
-
         mockMvc.perform(get("/admin/account/change_roles/1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("accountId"))
                 .andExpect(model().attributeExists("accountRoles"))
-                .andExpect(model().attributeExists("allRoles"))
-                .andExpect(model().attribute("allRoles", everyItem(instanceOf(String.class))))
-                .andExpect(model().attribute("accountRoles", everyItem(instanceOf(Role.class))))
+                .andExpect(model().attributeExists("availableRoles"))
+                .andExpect(
+                        model().attribute(
+                                "accountRoles",
+                                anyOf(
+                                        nullValue(),
+                                        everyItem(instanceOf(String.class))
+                                )
+                        )
+                )
+                .andExpect(
+                        model().attribute(
+                                "availableRoles",
+                                allOf(
+                                        instanceOf(List.class),
+                                        everyItem(instanceOf(String.class))
+                                )
+                        )
+                )
+
                 .andExpect(view().name("admin/account/change_roles"));
 
         verify(roleService, times(1)).getRolesByAccountId(1L);

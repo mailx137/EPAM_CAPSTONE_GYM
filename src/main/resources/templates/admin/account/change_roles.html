@@ -9,6 +9,22 @@
 <body>
 <section layout:fragment="content">
     <div class="container">
+        <h1 th:text="#{titles.change_roles}"></h1>
+        <form th:action="@{/admin/account/change_roles/{id}(id=${accountId})}" method="post">
+            <input type="hidden" name="_method" value="put"/>
+            <h1 th:text="${accountRoles}"></h1>
+            <div class="mb-3">
+                <label for="roles" class="form-label" th:text="#{labels.roles}"></label>
+                <select multiple class="form-select" id="roles" name="roles">
+                    <option th:each="role : ${availableRoles}"
+                            th:value="${role}"
+                            th:text="${role}"
+                            th:selected="${}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" th:text="#{buttons.save}">Save</button>
+        </form>
     </div>
 </section>
 </body>
