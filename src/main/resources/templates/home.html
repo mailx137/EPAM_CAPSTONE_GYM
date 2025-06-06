@@ -10,19 +10,22 @@
 <section layout:fragment="content">
     <h5 th:text="${#authentication}"></h5>
     <div class="container">
-                <div class="row">
-                    <div th:each="cycle, stat : ${cycles}" class="col-md-3 cycle-block">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h3 class="card-title" th:text="${cycle.name}"></h3>
-                                <p class="price card-text" th:text="${cycle.price} + ' $'"></p>
-                                <p class="duration card-text" th:text="${cycle.durationInDays} + ' days'"></p>
-                                <a href="#" class="btn btn-primary" th:text="#{buttons.buy}" sec:authorize="hasRole('CLIENT')">Buy</a>
-                            </div>
-                        </div>
+        <div class="row">
+            <div th:each="cycle, stat : ${cycles}" class="col-md-3 cycle-block">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${cycle.name}"></h3>
+                        <p class="price card-text" th:text="${cycle.price} + ' $'"></p>
+                        <p class="duration card-text" th:text="${cycle.durationInDays} + ' days'"></p>
+                        <form th:action="@{/cycle/assign/{id}(id=${cycle.getId()})}" method="post"
+                              sec:authorize="hasRole('CLIENT')">
+                            <button type="submit" class="btn btn-primary" th:text="#{buttons.buy}">Buy</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 </section>
 </body>
 
