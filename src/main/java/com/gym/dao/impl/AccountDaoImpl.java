@@ -299,4 +299,57 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
             cleanupResources(null, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public Optional<AccountWithRolesAndWallet> getAccountWithRolesAndWalletByEmail(String email) {
+        String sql = """
+                SELECT a.id, a.email, a.email_confirmed, a.blocked, a.created_at, a.updated_at,
+                       w.id AS wallet_id, w.balance AS wallet_balance,
+                       GROUP_CONCAT(r.name) AS roles
+                FROM accounts a
+                LEFT JOIN wallets w ON a.id = w.account_id
+                LEFT JOIN accounts_roles ar ON a.id = ar.account_id
+                LEFT JOIN roles r ON ar.role_id = r.id
+                WHERE a.email = ?
+                GROUP BY a.id, a.email, a.email_confirmed, a.blocked, a.created_at, a.updated_at, 
+                         w.id, w.balance
+                """;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, email);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                AccountWithRolesAndWallet account = new AccountWithRolesAndWallet();
+                account.setId(rs.getLong("id"));
+                account.setEmail(rs.getString("email"));
+                account.setEmailConfirmed(rs.getBoolean("email_confirmed"));
+                account.setBlocked(rs.getBoolean("blocked"));
+                account.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                account.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+
+                Object walletIdObj = rs.getObject("wallet_id");
+                Long walletId = walletIdObj == null ? null : ((Number)walletIdObj).longValue();
+                account.setWalletId(Optional.ofNullable(walletId));
+
+                account.setWalletBalance(Optional.ofNullable(rs.getBigDecimal("wallet_balance")));
+
+                String roles = rs.getString("roles");
+                if (roles != null) {
+                    account.setRoles(List.of(roles.split(",")));
+                }
+                return Optional.of(account);
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving account with roles and wallet by email: " + email, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
 }

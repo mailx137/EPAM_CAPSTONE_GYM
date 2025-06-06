@@ -118,4 +118,37 @@ public class AccountDaoTest extends AbstractDaoTest {
         assertTrue(account.getWalletId().isPresent());
         assertEquals(1L, account.getWalletId().get());
     }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
+
+            "INSERT IGNORE INTO roles (id, name) VALUES (1, 'CLIENT')",
+
+            "INSERT IGNORE INTO accounts_roles (account_id, role_id) VALUES (1, 1)",
+            "INSERT IGNORE INTO wallets (id, account_id, balance) VALUES (1, 1, 100.0)"
+    })
+    @Test
+    void testGetAccountWithRolesAndWalletByEmail() {
+        AccountWithRolesAndWallet account = accountDao.getAccountWithRolesAndWalletByEmail("test@test.com").orElse(null);
+        assertNotNull(account);
+        assertEquals("test@test.com", account.getEmail());
+        assertFalse(account.isBlocked());
+        assertFalse(account.isEmailConfirmed());
+        assertNotNull(account.getCreatedAt());
+        assertNotNull(account.getUpdatedAt());
+        assertTrue(account.getCreatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
+        assertTrue(account.getUpdatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
+
+        // Проверка роли
+        assertNotNull(account.getRoles());
+        assertTrue(account.getRoles().contains("CLIENT"));
+
+        // Проверка баланса кошелька через Optional
+        assertTrue(account.getWalletBalance().isPresent());
+        assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance().get()));
+
+        // Если хотите проверить id кошелька
+        assertTrue(account.getWalletId().isPresent());
+        assertEquals(1L, account.getWalletId().get());
+    }
 }

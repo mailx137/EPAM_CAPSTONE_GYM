@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">Gym</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -16,6 +16,10 @@
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item" sec:authorize="hasRole('CLIENT')">
+                    <a class="nav-link"><span
+                            th:text="#{navbar.balance(${#authentication.principal.walletBalance.orElse(0)})}"></span></a>
+                </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}" th:text="#{navbar.login}">Login</a>
                 </li>
@@ -23,18 +27,18 @@
                     <a class="nav-link" th:href="@{/register}" th:text="#{navbar.register}">registration</a>
                 </li>
 
-
-                <form class="d-flex" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
-                    <button class="btn btn-outline-danger" type="submit" th:text="#{buttons.logout}">Logout</button>
-                </form>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" th:text="${#locale.language.toUpperCase()}">EN</a>
+                       aria-expanded="false" th:text="${#locale.language.toUpperCase()}">EN</a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" th:href="@{/set-locale?lang=en}">English</a></li>
                         <li><a class="dropdown-item" th:href="@{/set-locale?lang=ru}">Русский</a></li>
                     </ul>
                 </li>
+                <form class="d-flex" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                    <button class="btn btn-outline-danger" type="submit" th:text="#{buttons.logout}">Logout</button>
+                </form>
+
             </ul>
 
         </div>

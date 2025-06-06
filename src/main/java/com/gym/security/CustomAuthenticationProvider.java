@@ -2,6 +2,7 @@ package com.gym.security;
 
 import com.gym.dao.AccountDao;
 import com.gym.dao.RoleDao;
+import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.model.Account;
 import com.gym.model.Role;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -43,13 +44,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid credentials");
         }
 
+        AccountWithRolesAndWallet accountDto = accountDao.getAccountWithRolesAndWalletByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+
         List<Role> roles = roleDao.getRolesByAccountId(account.getId());
         roles.forEach(role -> {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toString()));
         });
 
         return new UsernamePasswordAuthenticationToken(
-                email,
+                accountDto,
                 null,
                 authorities);
     }
