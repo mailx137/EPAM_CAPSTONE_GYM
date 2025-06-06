@@ -24,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -104,5 +105,15 @@ public class AccountControllerTest {
                 .andExpect(view().name("admin/account/change_roles"));
 
         verify(roleService, times(1)).getRolesByAccountId(1L);
+    }
+
+    @Test
+    void testUpdateRoles() throws Exception {
+        mockMvc.perform(put("/admin/account/change_roles/1")
+                    .param("accountId", "1")
+                    .param("roles", List.of("ADMIN", "CLIENT").toArray(new String[0])))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/accounts"));
+        verify(roleService, times(1)).updateRolesByAccountId(1L, List.of(RoleType.ADMIN.name(), RoleType.CLIENT.name()));
     }
 }

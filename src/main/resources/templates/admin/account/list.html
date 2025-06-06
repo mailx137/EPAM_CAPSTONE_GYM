@@ -33,7 +33,7 @@
                     <td th:text="${#temporals.format(account.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
                     <td th:text="${account.walletBalance.orElse(null)}"></td>
                     <td>
-                        <span class="badge text-bg-primary" th:each="role : ${account.roles}" th:text="${role}">Primary</span>
+                        <span class="badge text-bg-primary mx-1" th:each="role : ${account.roles}" th:text="${role}">Primary</span>
                     </td>
                     <td>
                         <a class="btn btn-primary btn-sm mb-1" th:href="@{/admin/account/change_roles/{id}(id=${account.id})}" th:text="#{buttons.change_roles}">Change roles</a>

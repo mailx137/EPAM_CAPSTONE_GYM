@@ -53,4 +53,12 @@ public class AccountController {
         model.addAttribute("availableRoles", availableRoles);
         return "admin/account/change_roles";
     }
+
+    @PutMapping("/admin/account/change_roles/{id}")
+    public String updateRoles(@PathVariable Long id, @RequestParam List<String> roles, RedirectAttributes redirectAttributes) {
+        roleService.updateRolesByAccountId(id, roles);
+        String successMessage = messageSource.getMessage("alert.account.roles.update.success", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        return "redirect:/admin/accounts";
+    }
 }

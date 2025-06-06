@@ -102,7 +102,7 @@ public class RoleDaoImpl implements RoleDao, JdbcCleanup {
     }
 
     @Override
-    public void updateRolesByAccountId(int accountId, List<Long> roleIds) {
+    public void updateRolesByAccountId(long accountId, List<Long> roleIds) {
         String deleteSql = "DELETE FROM accounts_roles WHERE account_id = ?";
         String insertSql = "INSERT INTO accounts_roles (account_id, role_id) VALUES (?, ?)";
         Connection conn = null;
@@ -112,15 +112,13 @@ public class RoleDaoImpl implements RoleDao, JdbcCleanup {
             conn = DataSourceUtils.getConnection(dataSource);
             conn.setAutoCommit(false);
 
-            // Delete existing roles for the account
             deleteStmt = conn.prepareStatement(deleteSql);
-            deleteStmt.setInt(1, accountId);
+            deleteStmt.setLong(1, accountId);
             deleteStmt.executeUpdate();
 
-            // Insert new roles
             insertStmt = conn.prepareStatement(insertSql);
             for (Long roleId : roleIds) {
-                insertStmt.setInt(1, accountId);
+                insertStmt.setLong(1, accountId);
                 insertStmt.setLong(2, roleId);
                 insertStmt.addBatch();
             }

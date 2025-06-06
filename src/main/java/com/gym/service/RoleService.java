@@ -17,4 +17,12 @@ public RoleService(RoleDao roleDao) {
     public List<Role> getRolesByAccountId(long accountId) {
         return roleDao.getRolesByAccountId(accountId);
     }
+
+    public void updateRolesByAccountId(long id, List<String> roles) {
+        List<Long> roleIds = roleDao.getAllRoles().stream()
+                .filter(role -> roles.contains(role.getName().name()))
+                .map(Role::getId)
+                .toList();
+        roleDao.updateRolesByAccountId(id, roleIds);
+    }
 }

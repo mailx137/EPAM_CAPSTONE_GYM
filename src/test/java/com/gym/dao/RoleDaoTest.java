@@ -10,12 +10,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Sql(statements = {
-        "INSERT IGNORE INTO roles (id, name) VALUES (1, 'ADMIN')",
-        "INSERT IGNORE INTO roles (id, name) VALUES (2, 'CLIENT')",
-        "INSERT IGNORE INTO roles (id, name) VALUES (3, 'TRAINER')",
-        "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
-        "INSERT IGNORE INTO accounts_roles (account_id, role_id) VALUES (1, 1)",
-        "INSERT IGNORE INTO accounts_roles (account_id, role_id) VALUES (1, 2)"
+        "DELETE FROM accounts_roles",
+        "DELETE FROM accounts",
+        "DELETE FROM roles",
+        "INSERT INTO roles (id, name) VALUES (1, 'ADMIN')",
+        "INSERT INTO roles (id, name) VALUES (2, 'CLIENT')",
+        "INSERT INTO roles (id, name) VALUES (3, 'TRAINER')",
+        "INSERT INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
+        "INSERT INTO accounts_roles (account_id, role_id) VALUES (1, 1)",
+        "INSERT INTO accounts_roles (account_id, role_id) VALUES (1, 2)"
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class RoleDaoTest extends AbstractDaoTest {
     private RoleDao roleDao;
