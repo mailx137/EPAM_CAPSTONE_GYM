@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CycleService {
@@ -48,5 +48,40 @@ public class CycleService {
         newCycle.setPrice(cycle.getPrice());
 
         cycleDao.insert(newCycle);
+    }
+
+    public Optional<Cycle> findCycleById(long id) {
+        return cycleDao.findById(id);
+    }
+
+    public CycleFormDto mapToFormDtoFromCycle(Cycle cycle) {
+        if (cycle == null) {
+            throw new IllegalArgumentException("Cycle cannot be null");
+        }
+        CycleFormDto cycleFormDto = new CycleFormDto();
+        cycleFormDto.setId(cycle.getId());
+        cycleFormDto.setName(cycle.getName());
+        cycleFormDto.setDescription(cycle.getDescription());
+        cycleFormDto.setDurationInDays(cycle.getDurationInDays());
+        cycleFormDto.setPublished(cycle.isPublished());
+        cycleFormDto.setPrice(cycle.getPrice());
+        return cycleFormDto;
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void updateCycle(long id, CycleFormDto cycleFormDto) {
+        if (cycleFormDto == null) {
+            throw new IllegalArgumentException("Cycle form data cannot be null");
+        }
+        Cycle cycle = cycleDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cycle with id " + id + " not found"));
+
+        cycle.setName(cycleFormDto.getName());
+        cycle.setDescription(cycleFormDto.getDescription());
+        cycle.setDurationInDays(cycleFormDto.getDurationInDays());
+        cycle.setPublished(cycleFormDto.isPublished());
+        cycle.setPrice(cycleFormDto.getPrice());
+
+        cycleDao.update(cycle);
     }
 }

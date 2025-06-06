@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CycleFormDto {
+    private Long id;
+
     @NotBlank
     private String name;
 
@@ -26,4 +28,12 @@ public class CycleFormDto {
 
     @Min(0)
     private BigDecimal price;
+
+    public CycleFormDto(String name, String description, int durationInDays, boolean published, BigDecimal price) {
+        this.name = name;
+        this.description = description;
+        this.durationInDays = durationInDays;
+        this.published = published;
+        this.price = price;
+    }
 }

@@ -59,16 +59,27 @@ public class CycleController {
         return "redirect:/admin/cycles";
     }
 
-//    @GetMapping("/admin/cycle/edit/{id}")
-//    public String showEditCycleForm(@PathVariable Long id, Model model) {
-//        Cycle cycle = cycleService.getCycleById();
-//        if (cycle == null) {
-//            return "redirect:/admin/cycles"; // or handle not found
-//        }
-//        model.addAttribute("cycleForm", new CycleFormDto(cycle));
-//        return "admin/cycle/form";
-//    }
-//        model.addAttribute("cycleForm", new CycleFormDto(cycle));
-//        return "admin/cycle/form";
-//    }
+
+
+    @GetMapping("/admin/cycle/edit/{id}")
+    public String showEditCycleForm(@PathVariable Long id, Model model) {
+        Cycle cycle = cycleService.findCycleById(id).orElseThrow(() -> new IllegalArgumentException("Invalid cycle ID: " + id));
+        CycleFormDto cycleFormDto = cycleService.mapToFormDtoFromCycle(cycle);
+        model.addAttribute("cycleForm", cycleFormDto);
+        return "admin/cycle/form";
+    }
+
+    @PutMapping("/admin/cycle/edit/{id}")
+    public String updateCycle(@PathVariable Long id, @Valid @ModelAttribute("cycleForm") CycleFormDto cycleFormDto,
+                              BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "admin/cycle/form";
+        }
+
+        cycleService.updateCycle(id, cycleFormDto);
+        String successMessage = messageSource.getMessage("alert.cycle.update.success", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        return "redirect:/admin/cycles";
+    }
+
 }

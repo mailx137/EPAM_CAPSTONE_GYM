@@ -3,6 +3,7 @@ package com.gym.dao.impl;
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
 import com.gym.model.Cycle;
+import com.mysql.cj.protocol.Resultset;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -159,6 +160,33 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             }
         } catch (Exception e) {
             throw new RuntimeException("Error fetching cycle with id " + id, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public void update(Cycle cycle) {
+        String sql = "UPDATE cycles SET name = ?, description = ?, duration_in_days = ?, published = ?, price = ? WHERE id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, cycle.getName());
+            stmt.setString(2, cycle.getDescription());
+            stmt.setInt(3, cycle.getDurationInDays());
+            stmt.setBoolean(4, cycle.isPublished());
+            stmt.setBigDecimal(5, cycle.getPrice());
+            stmt.setLong(6, cycle.getId());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Cycle with id " + cycle.getId() + " not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating cycle with id " + cycle.getId(), e);
         } finally {
             cleanupResources(rs, stmt, conn, dataSource);
         }

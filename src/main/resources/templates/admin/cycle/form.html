@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-security" layout:decorate="~{shared/layout}">
 
 <head>
-    <title th:text="#{titles.add_cycle}"></title>
+    <title th:text="${currentUrl.contains('cycle/add')} ? #{titles.add_cycle} : #{titles.edit_cycle}"></title>
 </head>
 
 <body>
@@ -18,19 +18,27 @@
     </div>
 </section>
 <section layout:fragment="content">
+    <h1 th:text="${currentUrl}"></h1>
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="p-4 rounded shadow-lg bg-white" style="width: 100%; max-width: 500px;">
-            <h2 th:text="#{titles.add_cycle}" class="mb-4 text-center">Registration</h2>
-            <form th:action="@{/admin/cycle/add}" th:object="${cycleForm}" method="post" novalidate>
+            <h2 th:text="${cycleForm.id} == null ? #{titles.add_cycle} : #{titles.edit_cycle}" class="mb-4 text-center"></h2>
+            <form th:action="@{${cycleForm.id} == null ? '/admin/cycle/add' : '/admin/cycle/edit/' + ${cycleForm.id}}"
+                  th:object="${cycleForm}"
+                  method="post"
+                  novalidate>
+                <input type="hidden" name="_method" value="put" th:if="${cycleForm.id != null}" />
+
+
+
                 <div class="mb-3">
-                    <label for="name" class="form-label" th:text="#{labels.title}">Email</label>
+                    <label for="name" class="form-label" th:text="#{labels.title}">Title</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}"
                            th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label" th:text="#{labels.description}">Email</label>
+                    <label for="description" class="form-label" th:text="#{labels.description}">Description</label>
                     <input type="text" class="form-control" id="description" th:field="*{description}"
                            th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
@@ -55,7 +63,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="price" class="form-label" th:text="#{labels.price}">Start Date</label>
+                    <label for="price" class="form-label" th:text="#{labels.price}">Price</label>
                     <input type="number" class="form-control" id="price" th:field="*{price}"
                            th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>

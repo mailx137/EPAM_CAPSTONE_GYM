@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -95,6 +96,7 @@ public class CycleControllerTest {
         LocaleContextHolder.setLocale(Locale.ENGLISH);
 
         CycleFormDto cycleFormDto = new CycleFormDto(
+                1L,
                 "Test Cycle",
                 "Description of test cycle",
                 30,
@@ -102,7 +104,7 @@ public class CycleControllerTest {
                 BigDecimal.valueOf(99.99)
         );
 
-        mockMvc.perform(post("/admin/cycle/create")
+        mockMvc.perform(post("/admin/cycle/add")
                         .param("name", cycleFormDto.getName())
                         .param("description", cycleFormDto.getDescription())
                         .param("durationInDays", String.valueOf(cycleFormDto.getDurationInDays()))
@@ -118,11 +120,56 @@ public class CycleControllerTest {
     }
 
     @Test
+    void testUpdateCycle() throws Exception {
+        String expectedMessage = "Cycle updated successfully!";
+        when(messageSource.getMessage(eq("alert.cycle.update.success"), any(), any(Locale.class)))
+                .thenReturn(expectedMessage);
+
+        LocaleContextHolder.setLocale(Locale.ENGLISH);
+
+        CycleFormDto cycleFormDto = new CycleFormDto(
+                "Updated Cycle",
+                "Updated description",
+                45,
+                false,
+                BigDecimal.valueOf(149.99)
+        );
+
+        mockMvc.perform(put("/admin/cycle/edit/1")
+                        .param("name", cycleFormDto.getName())
+                        .param("description", cycleFormDto.getDescription())
+                        .param("durationInDays", String.valueOf(cycleFormDto.getDurationInDays()))
+                        .param("published", String.valueOf(cycleFormDto.isPublished()))
+                        .param("price", cycleFormDto.getPrice().toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/cycles"))
+                .andExpect(flash().attribute("successMessage", expectedMessage));
+
+        verify(cycleService, times(1)).updateCycle(anyLong(), any(CycleFormDto.class));
+
+        LocaleContextHolder.resetLocaleContext();
+    }
+
+    @Test
     void testEditCycle() throws Exception {
+        Cycle cycle = new Cycle();
+        cycle.setId(1L);
+        cycle.setName("Test Cycle");
+        cycle.setDescription("Description of test cycle");
+        cycle.setDurationInDays(30);
+        cycle.setPublished(true);
+        cycle.setPrice(BigDecimal.valueOf(99.99));
+
+        when(cycleService.findCycleById(1L)).thenReturn(Optional.of(cycle));
+
+        when(cycleService.mapToFormDtoFromCycle(any(Cycle.class))).thenReturn(
+                new CycleFormDto("Test Cycle", "Description", 30, true, BigDecimal.valueOf(99.99))
+        );
         mockMvc.perform(get("/admin/cycle/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("cycleForm"))
                 .andExpect(model().attribute("cycleForm", instanceOf(CycleFormDto.class)))
                 .andExpect(view().name("admin/cycle/form"));
+        verify(cycleService, times(1)).findCycleById(1L);
     }
 }

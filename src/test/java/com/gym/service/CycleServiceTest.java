@@ -66,4 +66,31 @@ public class CycleServiceTest extends AbstractServiceTest{
         verify(cycleDao, times(1)).insert(notNull(Cycle.class));
     }
 
+    @Test
+    void testUpdateCycle() {
+        CycleFormDto cycleFormDto = new CycleFormDto(
+                "Updated Cycle",
+                "Updated description",
+                45,
+                false,
+                BigDecimal.valueOf(149.99)
+        );
+
+        Cycle existingCycle = new Cycle();
+        existingCycle.setId(1L);
+        existingCycle.setName("Original Cycle");
+        existingCycle.setDescription("Original description");
+        existingCycle.setDurationInDays(30);
+        existingCycle.setPublished(true);
+        existingCycle.setPrice(BigDecimal.valueOf(99.99));
+
+        when(cycleDao.findById(1L)).thenReturn(java.util.Optional.of(existingCycle));
+        doNothing().when(cycleDao).update(notNull(Cycle.class));
+
+        cycleService.updateCycle(1L, cycleFormDto);
+
+        verify(cycleDao, times(1)).findById(1L);
+        verify(cycleDao, times(1)).update(notNull(Cycle.class));
+    }
+
 }

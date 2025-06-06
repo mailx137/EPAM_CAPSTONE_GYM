@@ -15,4 +15,6 @@ public interface CycleDao {
     void insert(Cycle cycle);
 
     Optional<Cycle> findById(long id);
+
+    void update(Cycle cycle);
 }

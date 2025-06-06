@@ -82,4 +82,25 @@ public class CycleDaoTest extends AbstractDaoTest {
         assertEquals(true, cycle.isPublished());
         assertEquals(0, new BigDecimal(100).compareTo(cycle.getPrice()));
     }
+
+    @Sql(statements = "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (1, 'Cycle 1', 'Description 1', 30, true, 100.00)")
+    @Test
+    void testUpdateCycle() {
+        Cycle cycle = cycleDao.findById(1L).orElseThrow();
+        cycle.setName("Updated Cycle");
+        cycle.setDescription("Updated Description");
+        cycle.setDurationInDays(45);
+        cycle.setPublished(false);
+        cycle.setPrice(BigDecimal.valueOf(150.00));
+
+        cycleDao.update(cycle);
+
+        Cycle updatedCycle = cycleDao.findById(1L).orElseThrow();
+        assertNotNull(updatedCycle);
+        assertEquals("Updated Cycle", updatedCycle.getName());
+        assertEquals("Updated Description", updatedCycle.getDescription());
+        assertEquals(45, updatedCycle.getDurationInDays());
+        assertEquals(false, updatedCycle.isPublished());
+        assertEquals(0, new BigDecimal(150).compareTo(updatedCycle.getPrice()));
+    }
 }
