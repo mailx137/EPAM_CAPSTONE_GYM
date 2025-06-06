@@ -58,9 +58,10 @@ class AccountServiceTest extends AbstractServiceTest {
         doAnswer(invocation -> {
             Account acc = invocation.getArgument(0);
             acc.setId(1L);
-            LocalDateTime now = LocalDateTime.now();
-            acc.setCreatedAt(now);
-            acc.setUpdatedAt(now);
+            LocalDateTime slightlyInPast = LocalDateTime.now().minusSeconds(1);
+            acc.setCreatedAt(slightlyInPast);
+            acc.setUpdatedAt(slightlyInPast);
+            acc.setBlocked(false);
             return null;
         }).when(accountDao).insert(any(Account.class));
 

@@ -3,7 +3,10 @@ package com.gym.controller.admin;
 import com.gym.config.WebConfig;
 import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.dto.response.Paginator;
+import com.gym.enums.RoleType;
+import com.gym.model.Role;
 import com.gym.service.AccountService;
+import com.gym.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +40,12 @@ public class AccountControllerTest {
     @Mock
     private AccountService accountService;
 
+    @Mock
+    private RoleService roleService;
+
     @BeforeEach
     void setUp() {
-        accountController = new AccountController(accountService, messageSource);
+        accountController = new AccountController(accountService, messageSource, roleService);
         mockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
     }
 
@@ -67,5 +73,22 @@ public class AccountControllerTest {
                 .andExpect(flash().attribute("successMessage", expectedMessage));
         verify(accountService, times(1)).deleteAccount(1L);
 
+    }
+
+    @Test
+    void testChangeRoles() throws Exception {
+        List<Role> roles = List.of(new Role(1L, RoleType.CLIENT), new Role(2L, RoleType.ADMIN));
+        when(roleService.getRolesByAccountId(1L)).thenReturn(roles);
+
+        mockMvc.perform(get("/admin/account/change_roles/1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("accountId"))
+                .andExpect(model().attributeExists("accountRoles"))
+                .andExpect(model().attributeExists("allRoles"))
+                .andExpect(model().attribute("allRoles", everyItem(instanceOf(String.class))))
+                .andExpect(model().attribute("accountRoles", everyItem(instanceOf(Role.class))))
+                .andExpect(view().name("admin/account/change_roles"));
+
+        verify(roleService, times(1)).getRolesByAccountId(1L);
     }
 }
