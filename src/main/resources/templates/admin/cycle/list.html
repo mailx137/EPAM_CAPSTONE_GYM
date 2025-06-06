@@ -21,6 +21,9 @@
             </div>
             <input type="hidden" name="page" th:value="${cycles.currentPage}"/>
         </form>
+        <div class="d-flex justify-content-end mb-3">
+            <a class="btn btn-success" th:href="@{/admin/cycle/add}" th:text="#{buttons.add}">Add New Cycle</a>
+        </div>
         <table class="table table-striped table-hover table-bordered">
             <thead>
             <tr>

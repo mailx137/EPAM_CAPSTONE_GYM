@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CycleDaoImpl implements CycleDao, JdbcCleanup {
@@ -102,6 +103,64 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             throw new RuntimeException("Error deleting cycle with id " + id, e);
         } finally {
             cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public void insert(Cycle cycle) {
+        String sql = "INSERT INTO cycles (name, description, duration_in_days, published, price) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, cycle.getName());
+            stmt.setString(2, cycle.getDescription());
+            stmt.setInt(3, cycle.getDurationInDays());
+            stmt.setBoolean(4, cycle.isPublished());
+            stmt.setBigDecimal(5, cycle.getPrice());
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Failed to insert cycle");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error inserting cycle", e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public Optional<Cycle> findById(long id) {
+        String sql = "SELECT * FROM cycles WHERE id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Cycle cycle = new Cycle();
+                cycle.setId(rs.getLong("id"));
+                cycle.setName(rs.getString("name"));
+                cycle.setDescription(rs.getString("description"));
+                cycle.setDurationInDays(rs.getInt("duration_in_days"));
+                cycle.setPublished(rs.getBoolean("published"));
+                cycle.setPrice(rs.getBigDecimal("price"));
+                cycle.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                cycle.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                return Optional.of(cycle);
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching cycle with id " + id, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
         }
     }
 }

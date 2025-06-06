@@ -1,15 +1,16 @@
 package com.gym.controller.admin;
 
+import com.gym.dto.request.CycleFormDto;
+import com.gym.model.Cycle;
 import com.gym.service.CycleService;
+import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @PreAuthorize("hasRole('ADMIN')")
@@ -38,4 +39,36 @@ public class CycleController {
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         return "redirect:/admin/cycles";
     }
+
+    @GetMapping("/admin/cycle/add")
+    public String showAddCycleForm(Model model) {
+        model.addAttribute("cycleForm", new CycleFormDto());
+        return "admin/cycle/form";
+    }
+
+    @PostMapping("/admin/cycle/add")
+    public String createCycle(@Valid @ModelAttribute("cycleForm") CycleFormDto cycleFormDto, BindingResult result,
+                              RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "admin/cycle/form";
+        }
+
+        cycleService.createCycle(cycleFormDto);
+        String successMessage = messageSource.getMessage("alert.cycle.create.success", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        return "redirect:/admin/cycles";
+    }
+
+//    @GetMapping("/admin/cycle/edit/{id}")
+//    public String showEditCycleForm(@PathVariable Long id, Model model) {
+//        Cycle cycle = cycleService.getCycleById();
+//        if (cycle == null) {
+//            return "redirect:/admin/cycles"; // or handle not found
+//        }
+//        model.addAttribute("cycleForm", new CycleFormDto(cycle));
+//        return "admin/cycle/form";
+//    }
+//        model.addAttribute("cycleForm", new CycleFormDto(cycle));
+//        return "admin/cycle/form";
+//    }
 }

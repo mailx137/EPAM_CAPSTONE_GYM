@@ -4,7 +4,6 @@ import com.gym.config.WebConfig;
 import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.dto.response.Paginator;
 import com.gym.enums.RoleType;
-import com.gym.model.Role;
 import com.gym.service.AccountService;
 import com.gym.service.RoleService;
 import org.junit.jupiter.api.BeforeEach;

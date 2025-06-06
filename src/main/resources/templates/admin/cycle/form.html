@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-security" layout:decorate="~{shared/layout}">
+
+<head>
+    <title th:text="#{titles.add_cycle}"></title>
+</head>
+
+<body>
+<section layout:fragment="breadcrumb">
+    <div class="container mt-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/cycles}" th:text="#{titles.cycles}"></a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="#{titles.add_cycle}"></li>
+            </ol>
+        </nav>
+    </div>
+</section>
+<section layout:fragment="content">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="p-4 rounded shadow-lg bg-white" style="width: 100%; max-width: 500px;">
+            <h2 th:text="#{titles.add_cycle}" class="mb-4 text-center">Registration</h2>
+            <form th:action="@{/admin/cycle/add}" th:object="${cycleForm}" method="post" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label" th:text="#{labels.title}">Email</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}"
+                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label" th:text="#{labels.description}">Email</label>
+                    <input type="text" class="form-control" id="description" th:field="*{description}"
+                           th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                         th:errors="*{description}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="durationInDays" class="form-label" th:text="#{labels.duration_in_days}">Duration in
+                        days</label>
+                    <input type="number" class="form-control" id="durationInDays" th:field="*{durationInDays}"
+                           th:classappend="${#fields.hasErrors('durationInDays')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('durationInDays')}"
+                         th:errors="*{durationInDays}"></div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="published" th:field="*{published}"
+                           th:classappend="${#fields.hasErrors('published')} ? 'is-invalid'">
+                    <label for="published" class="form-check-label" th:text="#{labels.published}">Published</label>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('published')}"
+                         th:errors="*{published}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label" th:text="#{labels.price}">Start Date</label>
+                    <input type="number" class="form-control" id="price" th:field="*{price}"
+                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100"
+                        th:text="#{buttons.save}">Save
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>
