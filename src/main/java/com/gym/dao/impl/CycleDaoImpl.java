@@ -48,7 +48,7 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
                 cycle.setPublished(rs.getBoolean("published"));
                 cycle.setPrice(rs.getBigDecimal("price"));
                 cycle.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-                cycle.setCreatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                cycle.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
                 cycles.add(cycle);
             }
             return cycles;

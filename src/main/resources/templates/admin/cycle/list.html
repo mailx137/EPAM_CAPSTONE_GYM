@@ -13,25 +13,37 @@
             <thead>
             <tr>
                 <th scope="col">ID</th>
-
+                <th th:text="#{labels.name}"></th>
+                <th th:text="#{labels.description}"></th>
+                <th th:text="#{labels.duration_in_days}"></th>
+                <th th:text="#{labels.published}"></th>
+                <th th:text="#{labels.price}"></th>
+                <th th:text="#{labels.created_at}"></th>
+                <th th:text="#{labels.updated_at}"></th>
+                <th th:text="#{labels.actions}"></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="account : ${accounts.items}">
-                <th th:text="${account.id}"></th>
-<!--                <td>-->
-<!--                    <a class="btn btn-primary btn-sm mb-1"-->
-<!--                       th:href="@{/admin/account/change_roles/{id}(id=${account.id})}"-->
-<!--                       th:text="#{buttons.change_roles}">Change roles</a>-->
-<!--                    <br/>-->
-<!--                    <form th:action="@{/admin/accounts/delete/{id}(id=${account.id})}" method="post"-->
-<!--                          style="display:inline;">-->
-<!--                        <input type="hidden" name="_method" value="delete"/>-->
-<!--                        <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>-->
-<!--                    </form>-->
-<!--                </td>-->
+            <tr th:each="cycle : ${cycles.items}">
+                <th th:text="${cycle.id}"></th>
+                <td th:text="${cycle.name}"></td>
+                <td th:text="${cycle.description}"></td>
+                <td th:text="${cycle.durationInDays}"></td>
+                <td th:text="${cycle.published} ? #{yes} : #{no}"></td>
+                <td th:text="${cycle.price}"></td>
+                <td th:text="${#temporals.format(cycle.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(cycle.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td>
+                    <a class="btn btn-primary btn-sm"
+                       th:href="@{/admin/cycle/edit/{id}(id=${cycle.id})}"
+                       th:text="#{buttons.edit}">Edit Cycle</a>
+                    <form th:action="@{/admin/cycle/delete/{id}(id=${cycle.id})}" method="post"
+                          style="display:inline;">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>
+                    </form>
+                </td>
             </tr>
-            Ï
             </tbody>
         </table>
     </div>
