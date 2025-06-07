@@ -53,7 +53,7 @@ public class WalletControllerTest {
         mockMvc.perform(post("/wallet/top-up").param("amount", "100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", expectedMessage))
-                .andExpect(redirectedUrlPattern("*"));
+                .andExpect(view().name("redirect:/"));
 
         verify(walletService).topUp(eq(100), anyLong());
     }

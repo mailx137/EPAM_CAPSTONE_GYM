@@ -24,8 +24,7 @@ class WalletDaoTest extends AbstractDaoTest {
 
     @Test
     void testGetWalletByAccountIdSuccess_ReturnWallet() {
-        Optional<Wallet> optionalWallet = walletDao.getWalletByAccountId(1L);
-        Wallet wallet = optionalWallet.get();
+        Wallet wallet = walletDao.getWalletByAccountId(1L);
         assertNotNull(wallet);
         assertEquals(1L, wallet.getId());
         assertEquals(1L, wallet.getAccountId());
@@ -35,10 +34,30 @@ class WalletDaoTest extends AbstractDaoTest {
     @Test
     void testCreateWalletSuccess() {
         walletDao.createWallet(2L);
-        Optional<Wallet> optionalWallet = walletDao.getWalletByAccountId(2L);
-        assertTrue(optionalWallet.isPresent());
-        Wallet wallet = optionalWallet.get();
+        Wallet wallet = walletDao.getWalletByAccountId(2L);
         assertEquals(2L, wallet.getAccountId());
         assertEquals(0, new BigDecimal("0.00").compareTo(wallet.getBalance()));
+    }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (3, 'test@text.com', 'password123')",
+            "INSERT IGNORE INTO wallets (id, account_id, balance) VALUES (3, 3, 0.00)",
+    })
+    @Test
+    void testTopUpSuccess() {
+        walletDao.topUp(50, 3L);
+        Wallet wallet = walletDao.getWalletByAccountId(3L);
+        assertEquals(0, new BigDecimal("50.00").compareTo(wallet.getBalance()));
+    }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (3, 'test@text.com', 'password123')",
+            "INSERT IGNORE INTO wallets (id, account_id, balance) VALUES (3, 3, 122.00)",
+    })
+    @Test
+    void testGetBalanceByAccountIdSuccess() {
+        BigDecimal balance = walletDao.getBalanceByAccountId(3L);
+        assertNotNull(balance);
+        assertEquals(0, new BigDecimal("122.00").compareTo(balance));
     }
 }

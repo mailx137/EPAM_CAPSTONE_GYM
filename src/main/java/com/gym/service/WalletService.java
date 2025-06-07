@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 @Service
 public class WalletService {
-    private WalletDao walletDao;
+    private final WalletDao walletDao;
 
     public WalletService(WalletDao walletDao) {
         this.walletDao = walletDao;

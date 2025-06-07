@@ -2,11 +2,14 @@ package com.gym.dao;
 
 import com.gym.model.Wallet;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 
 public interface WalletDao {
     void createWallet(long id);
-    Optional<Wallet> getWalletByAccountId(long accountId);
+
+    Wallet getWalletByAccountId(long accountId);
 
     void topUp(int amount, long clientId);
+
+    BigDecimal getBalanceByAccountId(long accountId);
 }
