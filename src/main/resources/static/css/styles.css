@@ -1,8 +1,3 @@
-/* Custom styles for the application */
-body {
-    background: black !important;
-}
-
 /* Rest of your CSS rules */
 .row.position-relative {
     position: relative;

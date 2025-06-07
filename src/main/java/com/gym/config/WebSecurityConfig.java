@@ -22,6 +22,7 @@ public class WebSecurityConfig {
         http
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/login").anonymous()
                         .requestMatchers("/register").anonymous()
                         .requestMatchers("/set-locale").permitAll()

@@ -30,16 +30,16 @@ import com.gym.config.CustomConnectionPool;
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.gym.dao")
 public class TestDataSource {
-    @Value("${test.spring.datasource.url}")
+    @Value("${spring.datasource.url}")
     private String url;
 
-    @Value("${test.spring.datasource.username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("${test.spring.datasource.password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${test.spring.datasource.driver-class-name}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
     @Bean

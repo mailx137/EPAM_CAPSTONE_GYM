@@ -8,21 +8,22 @@
 
 <body>
 <section layout:fragment="content">
-    <h5 th:text="${#authentication}"></h5>
-    <div class="container">
         <div class="container-fluid">
             <div class="row position-relative">
                 <div class="col-md-6 left-container">
-                    <!-- Left side content -->
-                    <h5 th:text="${#authentication}"></h5>
-                    <!-- Your cycles or other content here -->
+                    <div th:if="${#locale.language == 'en'}">
+                        <div th:replace="~{shared/about}"></div>
+                    </div>
+
+                    <div th:if="${#locale.language == 'ru'}">
+                        <div th:replace="~{shared/about_ru}"></div>
+                    </div>
+
                 </div>
                 <div class="col-md-6 right-container">
-                    <!-- Right side content -->
-                    <!-- For example, cycles list or any other content -->
                     <div class="row">
-                        <div th:each="cycle, stat : ${cycles}" class="col-md-6 cycle-block">
-                            <div class="card mb-4">
+                        <div th:each="cycle, stat : ${cycles}" class="col-md-4 cycle-block">
+                            <div class="card mb-3">
                                 <div class="card-body">
                                     <h3 class="card-title" th:text="${cycle.name}"></h3>
                                     <p class="price card-text" th:text="${cycle.price} + ' $'"></p>
@@ -38,7 +39,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </section>
 </body>
 
