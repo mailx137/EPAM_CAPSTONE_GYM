@@ -13,6 +13,15 @@
         integrity="sha384-RuyvpeZCxMJCqVUGFI0Do1mQrods/hhxYlcVfGPOfQtPJh0JCw12tUAZ/Mv10S7D"
         crossorigin="anonymous"></script>
     <title layout:title-pattern="Gym - $CONTENT_TITLE">Default Title</title>
+    <!-- Make sure custom CSS is loaded AFTER Bootstrap to override its styles -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <!-- Alternative CSS link with absolute URL for testing -->
+    <style>
+        /* Inline style as a fallback to test if styling works */
+        body {
+            background-color: black !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,4 +43,4 @@
     </section>
 </body>
 
-</html>Ø
+</html>

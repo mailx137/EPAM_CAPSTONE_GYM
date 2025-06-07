@@ -1,0 +1,27 @@
+/* Custom styles for the application */
+body {
+    background: black !important;
+}
+
+/* Rest of your CSS rules */
+.row.position-relative {
+    position: relative;
+}
+
+.left-container {
+    position: relative;
+}
+
+.right-container {
+    position: relative;
+}
+
+.left-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 1px;
+    background-color: #dee2e6;
+}
