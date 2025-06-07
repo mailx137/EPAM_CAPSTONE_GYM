@@ -3,23 +3,55 @@
 <div class="accordion" id="accordionExample">
     <div class="accordion-item">
         <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 Регистрация и авторизация
             </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-                Описание:
-                    <p>Для регистрации нового пользователя необходимо заполнить форму регистрации, указав имя, фамилию, email и пароль. После успешной регистрации вы сможете войти в систему, используя указанные данные.</p>
-                    <p>Если вы уже зарегистрированы, просто введите свой email и пароль на странице авторизации.</p>
-                    <p>По умолчанию регистрируясь вы получаете роль клиента и у вас создается кошелек, пополняя которой вы можете приобретать циклы тренировок</p>
+                <strong>Описание:</strong>
+                <p>Для регистрации нового пользователя необходимо заполнить форму регистрации, указав имя, фамилию,
+                    email и пароль. После успешной регистрации вы сможете войти в систему, используя указанные
+                    данные.</p>
+                <p>Если вы уже зарегистрированы, просто введите свой email и пароль на странице авторизации.</p>
+                <p>По умолчанию регистрируясь вы получаете роль клиента и у вас создается кошелек, пополняя который вы
+                    можете приобретать циклы тренировок.</p>
 
-                    Реализация:
-                    <ul>
-                        <li>Регистрация нового пользователя с проверкой уникальности email. Создание кастомного валидатора password confirmation и обработка в AdviceController исключения.</li>
-                        <li>Авторизация с использованием Spring Security.</li>
-                        <li>Роли пользователей: клиент, администратор, тренер</li>
-                    </ul>
+                <strong>Реализация:</strong>
+                <ul>
+                    <li>Регистрация нового пользователя с проверкой уникальности email. Создание кастомного валидатора
+                        password confirmation и обработка в AdviceController исключения.
+                    </li>
+                    <li>Авторизация с использованием Spring Security.</li>
+                    <li>Роли пользователей: клиент, администратор, тренер.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Кошелек и пополнение баланса
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <strong>Описание:</strong>
+                <p>Только клиент может владеть кошельком.</p>
+
+                <strong>Реализация:</strong>
+                <ul>
+                    <li>Клиент может пополнить свой кошелек, указав сумму. Сумма должна быть больше 0.01.</li>
+                    <li>Баланс кошелька отображается в navbar.</li>
+                    <li>При пополнении кошелька создается запись в таблице wallet_transactions с типом "top_up".</li>
+                    <li>Клиент может просмотреть свой кошелек, где отображается текущий баланс и история транзакций.</li>
+                    <li>В ControllerAdvice реализован аттрибут balanceWallet, который передает текущий баланс кошелька в
+                        navbar.
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
