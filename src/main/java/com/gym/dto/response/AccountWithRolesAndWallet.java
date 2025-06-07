@@ -19,8 +19,8 @@ public class AccountWithRolesAndWallet {
     private boolean blocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Optional<Long> walletId;
-    private Optional<BigDecimal> walletBalance;
+    private Long walletId;
+    private BigDecimal walletBalance;
     private List<String> roles;
 
 

@@ -1,0 +1,26 @@
+<h3 class="mb-3 text-center">Проект фитнес центра GYM</h3>
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Регистрация и авторизация
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                Описание:
+                    <p>Для регистрации нового пользователя необходимо заполнить форму регистрации, указав имя, фамилию, email и пароль. После успешной регистрации вы сможете войти в систему, используя указанные данные.</p>
+                    <p>Если вы уже зарегистрированы, просто введите свой email и пароль на странице авторизации.</p>
+                    <p>По умолчанию регистрируясь вы получаете роль клиента и у вас создается кошелек, пополняя которой вы можете приобретать циклы тренировок</p>
+
+                    Реализация:
+                    <ul>
+                        <li>Регистрация нового пользователя с проверкой уникальности email. Создание кастомного валидатора и обработка в AdviceController исключения.</li>
+                        <li>Авторизация с использованием Spring Security.</li>
+                        <li>Роли пользователей: клиент, администратор, тренер</li>
+                    </ul>
+            </div>
+        </div>
+    </div>
+</div>

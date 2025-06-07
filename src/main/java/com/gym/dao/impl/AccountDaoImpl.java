@@ -206,9 +206,9 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
 
                 Object walletIdObj = rs.getObject("wallet_id");
                 Long walletId = walletIdObj == null ? null : ((Number)walletIdObj).longValue();
-                account.setWalletId(Optional.ofNullable(walletId));
+                account.setWalletId(walletId);
 
-                account.setWalletBalance(Optional.ofNullable(rs.getBigDecimal("wallet_balance")));
+                account.setWalletBalance(rs.getBigDecimal("wallet_balance"));
 
                 String roles = rs.getString("roles");
                 if (roles != null) {
@@ -262,9 +262,9 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
 
                 Object walletIdObj = rs.getObject("wallet_id");
                 Long walletId = walletIdObj == null ? null : ((Number)walletIdObj).longValue();
-                account.setWalletId(Optional.ofNullable(walletId));
+                account.setWalletId(walletId);
 
-                account.setWalletBalance(Optional.ofNullable(rs.getBigDecimal("wallet_balance")));
+                account.setWalletBalance(rs.getBigDecimal("wallet_balance"));
 
                 String roles = rs.getString("roles");
                 if (roles != null) {
@@ -335,9 +335,9 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
 
                 Object walletIdObj = rs.getObject("wallet_id");
                 Long walletId = walletIdObj == null ? null : ((Number)walletIdObj).longValue();
-                account.setWalletId(Optional.ofNullable(walletId));
+                account.setWalletId(walletId);
 
-                account.setWalletBalance(Optional.ofNullable(rs.getBigDecimal("wallet_balance")));
+                account.setWalletBalance(rs.getBigDecimal("wallet_balance"));
 
                 String roles = rs.getString("roles");
                 if (roles != null) {

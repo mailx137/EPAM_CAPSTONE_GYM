@@ -53,7 +53,7 @@ public class AccountDaoTest extends AbstractDaoTest {
         assertFalse(accountDao.emailExists("test@test.com"));
     }
 
-    @Sql (statements = {
+    @Sql(statements = {
             "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password123')",
             "INSERT IGNORE INTO accounts (id, email, password) VALUES (2, 'test2@test.com', 'password123')",
     })
@@ -106,17 +106,11 @@ public class AccountDaoTest extends AbstractDaoTest {
         assertTrue(account.getCreatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
         assertTrue(account.getUpdatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
 
-        // Проверка роли
         assertNotNull(account.getRoles());
         assertTrue(account.getRoles().contains("CLIENT"));
 
-        // Проверка баланса кошелька через Optional
-        assertTrue(account.getWalletBalance().isPresent());
-        assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance().get()));
-
-        // Если хотите проверить id кошелька
-        assertTrue(account.getWalletId().isPresent());
-        assertEquals(1L, account.getWalletId().get());
+        assertNotNull(account.getWalletBalance());
+        assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance()));
     }
 
     @Sql(statements = {
@@ -139,16 +133,11 @@ public class AccountDaoTest extends AbstractDaoTest {
         assertTrue(account.getCreatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
         assertTrue(account.getUpdatedAt().isBefore(LocalDateTime.now().plusSeconds(1)));
 
-        // Проверка роли
         assertNotNull(account.getRoles());
         assertTrue(account.getRoles().contains("CLIENT"));
 
-        // Проверка баланса кошелька через Optional
-        assertTrue(account.getWalletBalance().isPresent());
-        assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance().get()));
+        assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance()));
 
-        // Если хотите проверить id кошелька
-        assertTrue(account.getWalletId().isPresent());
-        assertEquals(1L, account.getWalletId().get());
+        assertEquals(1L, account.getWalletId());
     }
 }

@@ -22,6 +22,7 @@
                 </div>
                 <div class="col-md-6 right-container">
                     <div class="row">
+                        <h3 class="text-center mb-3" th:text="#{titles.published_cycles}"></h3>
                         <div th:each="cycle, stat : ${cycles}" class="col-md-4 cycle-block">
                             <div class="card mb-3">
                                 <div class="card-body">
