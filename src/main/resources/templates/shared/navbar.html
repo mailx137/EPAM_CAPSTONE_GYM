@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary shadow">
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">Gym</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -20,8 +20,11 @@
                     <a class="nav-link" th:href="@{/orders}" th:text="#{navbar.orders}"></a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('CLIENT')">
+                    <a class="nav-link" th:href="@{/wallet/top-up}" th:text="#{navbar.top_up_balance}"></a>
+
+                <li class="nav-item" sec:authorize="hasRole('CLIENT')">
                     <a class="nav-link"><span
-                            th:text="#{navbar.balance(${#authentication.principal.walletBalance.orElse(0)})}"></span></a>
+                            th:text="#{navbar.balance(${#authentication.principal.walletBalance})}"></span></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}" th:text="#{navbar.login}">Login</a>

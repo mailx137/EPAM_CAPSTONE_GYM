@@ -43,7 +43,7 @@
                 <td th:text="${account.blocked} ? #{yes} : #{no}"></td>
                 <td th:text="${#temporals.format(account.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 <td th:text="${#temporals.format(account.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
-                <td th:text="${account.walletBalance.orElse(null)}"></td>
+                <td th:text="${account.walletBalance}"></td>
                 <td>
                     <span class="badge text-bg-primary mx-1" th:each="role : ${account.roles}"
                           th:text="${role}">Primary</span>

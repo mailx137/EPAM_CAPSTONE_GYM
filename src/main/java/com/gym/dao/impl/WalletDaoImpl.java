@@ -67,4 +67,25 @@ public class WalletDaoImpl implements WalletDao, JdbcCleanup {
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public void topUp(int amount, long clientId) {
+        String sql = "UPDATE wallets SET balance = balance + ? WHERE account_id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, amount);
+            stmt.setLong(2, clientId);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw new RuntimeException("No wallet found for account ID: " + clientId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error topping up wallet for account ID: " + clientId, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
 }

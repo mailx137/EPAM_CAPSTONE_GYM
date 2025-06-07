@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface WalletDao {
     void createWallet(long id);
     Optional<Wallet> getWalletByAccountId(long accountId);
+
+    void topUp(int amount, long clientId);
 }
