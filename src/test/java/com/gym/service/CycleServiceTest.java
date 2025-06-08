@@ -1,8 +1,11 @@
 package com.gym.service;
 
+import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
 import com.gym.dto.response.Paginator;
+import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
+import com.gym.model.AccountCycleEnrollment;
 import com.gym.model.Cycle;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +24,9 @@ public class CycleServiceTest extends AbstractServiceTest{
 
     @Mock
     private CycleDao cycleDao;
+
+    @Mock
+    private AccountCycleEnrollmentDao accountCycleEnrollmentDao;
 
     @Test
     void testGetCyclesByPage() {
@@ -93,13 +99,24 @@ public class CycleServiceTest extends AbstractServiceTest{
 
     @Test
     void testEnrollCycle() {
-        long cycleId = 1L;
         long accountId = 2L;
+        long cycleId = 1L;
 
-        doNothing().when(cycleDao).enrollCycle(cycleId, accountId);
-        cycleService.enrollCycle(cycleId, accountId);
+        // Ensure method doesn't exist for first call
+        when(accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId)).thenReturn(false);
+        doNothing().when(cycleDao).enrollCycle(accountId, cycleId);
 
-        verify(cycleDao, times(1)).enrollCycle(cycleId, accountId);
+        // First call should succeed - enrollment doesn't exist yet
+        cycleService.enrollCycle(accountId, cycleId);
+        verify(cycleDao, times(1)).enrollCycle(accountId, cycleId);
+
+        // Now set up mock to return true (enrollment exists)
+        when(accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId)).thenReturn(true);
+
+        // Second call should throw exception - enrollment already exists
+        assertThrows(AccountCycleEnrollmentAlreadyExistsException.class, () -> {
+            cycleService.enrollCycle(accountId, cycleId);
+        });
     }
 
 }

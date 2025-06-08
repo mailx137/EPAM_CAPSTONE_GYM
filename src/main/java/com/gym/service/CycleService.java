@@ -1,8 +1,10 @@
 package com.gym.service;
 
+import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
 import com.gym.dto.response.Paginator;
+import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
 import com.gym.model.Cycle;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +16,11 @@ import java.util.Optional;
 @Service
 public class CycleService {
     private CycleDao cycleDao;
+    private AccountCycleEnrollmentDao accountCycleEnrollmentDao;
 
-    public CycleService(CycleDao cycleDao) {
+    public CycleService(CycleDao cycleDao, AccountCycleEnrollmentDao accountCycleEnrollmentDao) {
         this.cycleDao = cycleDao;
+        this.accountCycleEnrollmentDao = accountCycleEnrollmentDao;
     }
 
     public Paginator<Cycle> getPaginatedAllCycles(Integer page, Integer size) {
@@ -95,6 +99,12 @@ public class CycleService {
         if (accountId <= 0 || cycleId <= 0) {
             throw new IllegalArgumentException("Account ID and Cycle ID must be greater than 0");
         }
+        if (accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId)) {
+            throw new AccountCycleEnrollmentAlreadyExistsException(
+                    "Account with ID " + accountId + " is already enrolled in cycle with ID " + cycleId
+            );
+        }
+
         cycleDao.enrollCycle(accountId, cycleId);
     }
 }

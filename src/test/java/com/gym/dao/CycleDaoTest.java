@@ -133,6 +133,19 @@ public class CycleDaoTest extends AbstractDaoTestConfig {
         assertEquals(1L, enrollment.get().getAccountId(), "Account ID should match");
         assertEquals(1L, enrollment.get().getCycleId(), "Cycle ID should match");
         assertNull(enrollment.get().getTrainerId(), "Trainer ID should be null for this test");
+    }
 
+    @Sql(statements = {
+            "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (1, 'Cycle 1', 'Description 1', 30, true, 100.00)",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password')",
+            "INSERT IGNORE INTO account_cycle_enrollments (account_id, cycle_id, status) VALUES (1, 1, 'ACTIVE')"
+    })
+    @Test
+    void voidAccountCycleEnrollmentExists() {
+        Optional<AccountCycleEnrollment> enrollment = accountCycleEnrollmentDao.getByAccountIdAndCycleId(1L, 1L);
+        assertTrue(enrollment.isPresent(), "Enrollment should exist");
+        assertEquals(1L, enrollment.get().getAccountId(), "Account ID should match");
+        assertEquals(1L, enrollment.get().getCycleId(), "Cycle ID should match");
+        assertEquals("ACTIVE", enrollment.get().getStatus().name(), "Status should be ACTIVE");
     }
 }

@@ -59,4 +59,27 @@ public class AccountCycleEnrollmentDaoImpl implements AccountCycleEnrollmentDao,
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean existsByAccountIdAndCycleId(Long accountId, Long cycleId) {
+        String sql = "SELECT COUNT(*) FROM account_cycle_enrollments WHERE account_id = ? AND cycle_id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, accountId);
+            stmt.setLong(2, cycleId);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if enrollment exists for account " + accountId + " and cycle " + cycleId, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
 }

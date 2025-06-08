@@ -23,7 +23,7 @@ public class CycleController {
 
     @PostMapping("/cycle/enroll/{id}")
     public String enrollInCycle(@PathVariable("id") Long cycleId, RedirectAttributes redirectAttributes, @AuthenticationPrincipal AccountWithRolesAndWallet account) {
-        cycleService.enrollCycle(cycleId, account.getId());
+        cycleService.enrollCycle(account.getId(), cycleId);
         redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("alert.cycle.enroll.success", null, LocaleContextHolder.getLocale()));
         return "redirect:/my-cycles";
     }
