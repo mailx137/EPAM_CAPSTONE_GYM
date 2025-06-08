@@ -32,9 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {WebConfig.class})
-public class CycleControllerTest {
+public class AdminCycleControllerTest {
     private MockMvc mockMvc;
-    private CycleController cycleController;
+    private AdminCycleController cycleController;
 
     @Mock
     private CycleService cycleService;
@@ -44,7 +44,7 @@ public class CycleControllerTest {
 
     @BeforeEach
     void setUp() {
-        cycleController = new CycleController(cycleService, messageSource);
+        cycleController = new AdminCycleController(cycleService, messageSource);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(cycleController)
                 .build();

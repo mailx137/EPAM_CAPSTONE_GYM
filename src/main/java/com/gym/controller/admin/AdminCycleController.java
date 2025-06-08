@@ -15,11 +15,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @PreAuthorize("hasRole('ADMIN')")
 @Controller
-public class CycleController {
+public class AdminCycleController {
     private CycleService cycleService;
     private MessageSource messageSource;
 
-    public CycleController(CycleService cycleService, MessageSource messageSource) {
+    public AdminCycleController(CycleService cycleService, MessageSource messageSource) {
         this.cycleService = cycleService;
         this.messageSource = messageSource;
     }

@@ -89,4 +89,8 @@ public class CycleService {
     public List<Cycle> getPublishedCycles() {
         return cycleDao.getPublishedCycles();
     }
+
+    @Transactional
+    public void enrollCycle(long cycleId, long accountId) {
+    }
 }
