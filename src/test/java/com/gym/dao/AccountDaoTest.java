@@ -2,7 +2,6 @@ package com.gym.dao;
 
 
 import com.gym.dto.response.AccountWithRolesAndWallet;
-import com.gym.enums.RoleType;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AccountDaoTest extends AbstractDaoTest {
+public class AccountDaoTest extends AbstractDaoTestConfig {
     private AccountDao accountDao;
 
     public AccountDaoTest(AccountDao accountDao) {

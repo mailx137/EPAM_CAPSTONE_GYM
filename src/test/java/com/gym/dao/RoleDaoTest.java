@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
         "INSERT INTO accounts_roles (account_id, role_id) VALUES (1, 1)",
         "INSERT INTO accounts_roles (account_id, role_id) VALUES (1, 2)"
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class RoleDaoTest extends AbstractDaoTest {
+public class RoleDaoTest extends AbstractDaoTestConfig {
     private RoleDao roleDao;
 
     public RoleDaoTest(RoleDao roleDao) {

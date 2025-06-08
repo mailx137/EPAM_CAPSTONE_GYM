@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CycleDaoTest extends AbstractDaoTest {
+public class CycleDaoTest extends AbstractDaoTestConfig {
 
     private CycleDao cycleDao;
 

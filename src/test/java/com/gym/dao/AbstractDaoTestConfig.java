@@ -11,5 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(classes = {TestAppConfig.class})
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @Transactional
-public class AbstractDaoTest {
+public class AbstractDaoTestConfig {
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
         "INSERT IGNORE INTO wallets (id, account_id, balance) VALUES (1, 1, 100.00)",
         "INSERT IGNORE INTO accounts (id, email, password) VALUES (2, 'test2@test.com', 'password123')",
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class WalletDaoTest extends AbstractDaoTest {
+class WalletDaoTest extends AbstractDaoTestConfig {
     private WalletDao walletDao;
 
     public WalletDaoTest(WalletDao walletDao) {
