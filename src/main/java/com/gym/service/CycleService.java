@@ -92,5 +92,9 @@ public class CycleService {
 
     @Transactional
     public void enrollCycle(long cycleId, long accountId) {
+        if (cycleId <= 0 || accountId <= 0) {
+            throw new IllegalArgumentException("Cycle ID and Account ID must be greater than 0");
+        }
+        cycleDao.enrollCycle(cycleId, accountId);
     }
 }
