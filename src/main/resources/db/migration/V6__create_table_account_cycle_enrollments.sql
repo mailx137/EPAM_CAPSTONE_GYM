@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS account_cycle_assignments (
+CREATE TABLE IF NOT EXISTS account_cycle_enrollments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     account_id BIGINT NOT NULL,
     cycle_id BIGINT NOT NULL,
@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS account_cycle_assignments (
     trainee_id BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    paid BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
     FOREIGN KEY (cycle_id) REFERENCES cycles(id) ON DELETE RESTRICT,
     FOREIGN KEY (trainee_id) REFERENCES accounts(id) ON DELETE CASCADE,
