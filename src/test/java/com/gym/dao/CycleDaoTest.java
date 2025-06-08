@@ -117,4 +117,21 @@ public class CycleDaoTest extends AbstractDaoTestConfig {
         assertEquals("Cycle 1", publishedCycles.get(0).getName());
         assertEquals("Cycle 3", publishedCycles.get(1).getName());
     }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (1, 'Cycle 1', 'Description 1', 30, true, 100.00)",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password')",
+    })
+    @Test
+    void testEnrollCycle() {
+        Cycle cycle = new Cycle();
+        cycle.setId(1L);
+        cycle.setName("Cycle 1");
+        cycle.setDescription("Description 1");
+        cycle.setDurationInDays(30);
+        cycle.setPublished(true);
+        cycle.setPrice(BigDecimal.valueOf(100.00));
+
+        cycleDao.insert(cycle);
+    }
 }

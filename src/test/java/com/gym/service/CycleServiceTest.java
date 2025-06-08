@@ -3,7 +3,6 @@ package com.gym.service;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
 import com.gym.dto.response.Paginator;
-import com.gym.model.Account;
 import com.gym.model.Cycle;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,8 +11,7 @@ import org.mockito.Mock;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +27,7 @@ public class CycleServiceTest extends AbstractServiceTest{
         List<Cycle> cycles = List.of(new Cycle(), new Cycle(), new Cycle());
         when(cycleDao.getCyclesByPage(1, 10)).thenReturn(cycles);
         Paginator<Cycle> selectedCycles = cycleService.getPaginatedAllCycles(1, 10);
-        assertNotNull(selectedCycles);
+        assertNotNull(selectedCycles.getItems());
         assertEquals(selectedCycles.getItems().size(), cycles.size());
 
         verify(cycleDao, times(1)).getCyclesByPage(1, 10);
@@ -91,6 +89,17 @@ public class CycleServiceTest extends AbstractServiceTest{
 
         verify(cycleDao, times(1)).findById(1L);
         verify(cycleDao, times(1)).update(notNull(Cycle.class));
+    }
+
+    @Test
+    void testEnrollCycle() {
+        long cycleId = 1L;
+        long accountId = 2L;
+
+        doNothing().when(cycleDao).enrollCycle(cycleId, accountId);
+        cycleService.enrollCycle(cycleId, accountId);
+
+        verify(cycleDao, times(1)).enrollCycle(cycleId, accountId);
     }
 
 }

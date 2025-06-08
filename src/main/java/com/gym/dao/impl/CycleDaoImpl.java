@@ -223,4 +223,26 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public void enrollCycle(long cycleId, long accountId) {
+        String sql = "INSERT INTO cycle_enrollments (cycle_id, account_id) VALUES (?, ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, cycleId);
+            stmt.setLong(2, accountId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Failed to enroll in cycle with id " + cycleId);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error enrolling in cycle with id " + cycleId, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
 }

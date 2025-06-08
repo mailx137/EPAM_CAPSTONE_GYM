@@ -19,4 +19,6 @@ public interface CycleDao {
     void update(Cycle cycle);
 
     List<Cycle> getPublishedCycles();
+
+    void enrollCycle(long cycleId, long accountId);
 }
