@@ -14,8 +14,8 @@ public class AccountCycleEnrollment {
     private long id;
     private long accountId;
     private long cycleId;
-    private Long trainer;
+    private Long trainerId;
     private AccountCycleEnrollmentStatus status;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

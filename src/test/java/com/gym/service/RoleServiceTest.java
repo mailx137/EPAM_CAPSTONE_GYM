@@ -1,6 +1,7 @@
 package com.gym.service;
 
 import com.gym.dao.RoleDao;
+import com.gym.dao.WalletDao;
 import com.gym.enums.RoleType;
 import com.gym.model.Role;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ public class RoleServiceTest extends AbstractServiceTest {
 
     @Mock
     private RoleDao roleDao;
+
+    @Mock
+    private WalletDao walletDao;
 
     @Test
     void testUpdateRolesByAccountId() {
@@ -36,5 +40,11 @@ public class RoleServiceTest extends AbstractServiceTest {
         doNothing().when(roleDao).updateRolesByAccountId(accountId, roleIds);
         roleService.updateRolesByAccountId(accountId, roleNames);
         verify(roleDao).updateRolesByAccountId(accountId, roleIds);
+
+        if (roleNames.contains("CLIENT")) {
+            verify(walletDao).createWallet(accountId);
+        } else {
+            verify(walletDao, never()).createWallet(accountId);
+        }
     }
 }

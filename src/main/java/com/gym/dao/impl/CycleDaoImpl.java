@@ -2,6 +2,7 @@ package com.gym.dao.impl;
 
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
+import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.model.Cycle;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
@@ -226,23 +227,25 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
 
     @Override
     public void enrollCycle(long cycleId, long accountId) {
-        String sql = "INSERT INTO cycle_enrollments (cycle_id, account_id) VALUES (?, ?)";
+        String sql = "INSERT INTO account_cycle_enrollments (account_id, cycle_id, status, created_at) VALUES (?, ?, ?, NOW())";
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = DataSourceUtils.getConnection(dataSource);
             stmt = conn.prepareStatement(sql);
-            stmt.setLong(1, cycleId);
-            stmt.setLong(2, accountId);
+            stmt.setLong(1, accountId);
+            stmt.setLong(2, cycleId);
+            stmt.setString(3, AccountCycleEnrollmentStatus.PENDING.name());
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {
-                throw new RuntimeException("Failed to enroll in cycle with id " + cycleId);
+                throw new RuntimeException("Failed to enroll account " + accountId + " in cycle " + cycleId);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error enrolling in cycle with id " + cycleId, e);
+            throw new RuntimeException("Error enrolling account " + accountId + " in cycle " + cycleId, e);
         } finally {
             cleanupResources(null, stmt, conn, dataSource);
         }
     }
+
 }

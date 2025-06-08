@@ -3,11 +3,11 @@ CREATE TABLE IF NOT EXISTS account_cycle_enrollments (
     account_id BIGINT NOT NULL,
     cycle_id BIGINT NOT NULL,
     status VARCHAR(20) NOT NULL,
-    trainee_id BIGINT NOT NULL,
+    trainer_id BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
     FOREIGN KEY (cycle_id) REFERENCES cycles(id) ON DELETE RESTRICT,
-    FOREIGN KEY (trainee_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    FOREIGN KEY (trainer_id) REFERENCES accounts(id) ON DELETE CASCADE,
     UNIQUE (account_id, cycle_id)
 );

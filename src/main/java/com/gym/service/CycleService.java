@@ -90,11 +90,11 @@ public class CycleService {
         return cycleDao.getPublishedCycles();
     }
 
-    @Transactional
-    public void enrollCycle(long cycleId, long accountId) {
-        if (cycleId <= 0 || accountId <= 0) {
-            throw new IllegalArgumentException("Cycle ID and Account ID must be greater than 0");
+    @Transactional(rollbackFor = SQLException.class)
+    public void enrollCycle(long accountId, long cycleId) {
+        if (accountId <= 0 || cycleId <= 0) {
+            throw new IllegalArgumentException("Account ID and Cycle ID must be greater than 0");
         }
-        cycleDao.enrollCycle(cycleId, accountId);
+        cycleDao.enrollCycle(accountId, cycleId);
     }
 }

@@ -1,5 +1,6 @@
 package com.gym.controller;
 
+import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.model.Account;
 import com.gym.service.CycleService;
 import org.springframework.context.MessageSource;
@@ -21,7 +22,7 @@ public class CycleController {
     }
 
     @PostMapping("/cycle/enroll/{id}")
-    public String enrollInCycle(@PathVariable("id") Long cycleId, RedirectAttributes redirectAttributes, @AuthenticationPrincipal Account account) {
+    public String enrollInCycle(@PathVariable("id") Long cycleId, RedirectAttributes redirectAttributes, @AuthenticationPrincipal AccountWithRolesAndWallet account) {
         cycleService.enrollCycle(cycleId, account.getId());
         redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("alert.cycle.enroll.success", null, LocaleContextHolder.getLocale()));
         return "redirect:/my-cycles";

@@ -1,5 +1,6 @@
 package com.gym.dao;
 
+import com.gym.model.AccountCycleEnrollment;
 import com.gym.model.Cycle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,16 +9,18 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CycleDaoTest extends AbstractDaoTestConfig {
 
-    private CycleDao cycleDao;
+    private final CycleDao cycleDao;
+    private final AccountCycleEnrollmentDao accountCycleEnrollmentDao;
 
-    public CycleDaoTest(CycleDao cycleDao) {
+    public CycleDaoTest(CycleDao cycleDao, AccountCycleEnrollmentDao accountCycleEnrollmentDao) {
         this.cycleDao = cycleDao;
+        this.accountCycleEnrollmentDao = accountCycleEnrollmentDao;
     }
 
     @Sql(statements = {
@@ -124,14 +127,12 @@ public class CycleDaoTest extends AbstractDaoTestConfig {
     })
     @Test
     void testEnrollCycle() {
-        Cycle cycle = new Cycle();
-        cycle.setId(1L);
-        cycle.setName("Cycle 1");
-        cycle.setDescription("Description 1");
-        cycle.setDurationInDays(30);
-        cycle.setPublished(true);
-        cycle.setPrice(BigDecimal.valueOf(100.00));
+        cycleDao.enrollCycle(1L, 1L);
+        Optional<AccountCycleEnrollment> enrollment = accountCycleEnrollmentDao.getByAccountIdAndCycleId(1L, 1L);
+        assertNotNull(enrollment);
+        assertEquals(1L, enrollment.get().getAccountId(), "Account ID should match");
+        assertEquals(1L, enrollment.get().getCycleId(), "Cycle ID should match");
+        assertNull(enrollment.get().getTrainerId(), "Trainer ID should be null for this test");
 
-        cycleDao.insert(cycle);
     }
 }
