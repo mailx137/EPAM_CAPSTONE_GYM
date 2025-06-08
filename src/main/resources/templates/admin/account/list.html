@@ -51,7 +51,7 @@
                 <a class="btn btn-primary btn-sm"
                    th:href="@{/admin/account/change_roles/{id}(id=${account.id})}"
                    th:text="#{buttons.change_roles}">Change roles</a>
-                <form th:action="@{/admin/accounts/delete/{id}(id=${account.id})}" method="post"
+                <form th:action="@{/admin/account/delete/{id}(id=${account.id})}" method="post"
                       style="display:inline;">
                     <input type="hidden" name="_method" value="delete"/>
                     <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>

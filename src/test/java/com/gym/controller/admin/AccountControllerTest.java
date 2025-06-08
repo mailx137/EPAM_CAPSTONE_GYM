@@ -22,8 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -67,7 +66,7 @@ public class AccountControllerTest {
     @Test
     void testDeleteAccount() throws Exception {
         String expectedMessage = messageSource.getMessage("alert.account.delete.success", null, LocaleContextHolder.getLocale());
-        mockMvc.perform(get("/admin/account/delete/1"))
+        mockMvc.perform(delete("/admin/account/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/accounts"))
                 .andExpect(flash().attribute("successMessage", expectedMessage));

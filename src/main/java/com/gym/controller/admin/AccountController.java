@@ -22,7 +22,7 @@ public class AccountController {
     private MessageSource messageSource;
     private RoleService roleService;
 
-    public AccountController(AccountService accountService , MessageSource messageSource, RoleService roleService) {
+    public AccountController(AccountService accountService, MessageSource messageSource, RoleService roleService) {
         this.accountService = accountService;
         this.messageSource = messageSource;
         this.roleService = roleService;
@@ -36,10 +36,10 @@ public class AccountController {
         return "admin/account/list";
     }
 
-    @GetMapping("/admin/account/delete/{id}")
+    @DeleteMapping("/admin/account/delete/{id}")
     public String deleteAccount(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String expectedMessage = messageSource.getMessage("alert.account.delete.success", null, LocaleContextHolder.getLocale());
         accountService.deleteAccount(id);
+        String expectedMessage = messageSource.getMessage("alert.account.delete.success", null, LocaleContextHolder.getLocale());
         redirectAttributes.addFlashAttribute("successMessage", expectedMessage);
         return "redirect:/admin/accounts";
     }
