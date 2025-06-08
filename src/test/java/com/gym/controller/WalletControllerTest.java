@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,9 +16,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,11 +50,14 @@ public class WalletControllerTest {
 
     @Test
     void testTopUpSuccess() throws Exception {
+        when(messageSource.getMessage(eq("alert.wallet.top_up.success"), any(), any()))
+                .thenReturn("User balance topped up");
         String expectedMessage = messageSource.getMessage("alert.wallet.top_up.success", null, LocaleContextHolder.getLocale());
+
         mockMvc.perform(post("/wallet/top-up").param("amount", "100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", expectedMessage))
-                .andExpect(view().name("redirect:/"));
+                .andExpect(redirectedUrl("/"));
 
         verify(walletService).topUp(eq(100), anyLong());
     }

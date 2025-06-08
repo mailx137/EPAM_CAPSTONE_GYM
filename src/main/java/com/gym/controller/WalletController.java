@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @PreAuthorize("hasRole('CLIENT')")
 @Controller
@@ -28,9 +29,10 @@ public class WalletController {
     }
 
     @PostMapping("/wallet/top-up")
-    public String topUp(@RequestParam("amount") int amount, @AuthenticationPrincipal AccountWithRolesAndWallet account) {
+    public String topUp(@RequestParam("amount") int amount, @AuthenticationPrincipal AccountWithRolesAndWallet account, RedirectAttributes redirectAttributes) {
         walletService.topUp(amount, account.getId());
         String successMessage = messageSource.getMessage("alert.wallet.top_up.success", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
         return "redirect:/";
     }
 }
