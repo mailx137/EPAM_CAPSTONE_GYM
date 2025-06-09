@@ -101,21 +101,19 @@ public class CycleServiceTest extends AbstractServiceTest{
     void testEnrollCycle() {
         long accountId = 2L;
         long cycleId = 1L;
-
-        // Corrected stubbing for existsByAccountIdAndCycleId using (cycleId, accountId)
         // and sequential return values for the two calls.
-        when(accountCycleEnrollmentDao.existsByAccountIdAndCycleId(cycleId, accountId))
+        when(accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId))
             .thenReturn(false)  // For the first call to cycleService.enrollCycle
             .thenReturn(true);   // For the second call to cycleService.enrollCycle (inside assertThrows)
 
         // Corrected stubbing for enrollCycle using (cycleId, accountId)
-        doNothing().when(cycleDao).enrollCycle(cycleId, accountId);
+        doNothing().when(cycleDao).enrollCycle(accountId, cycleId);
 
         // First call to the service method
         cycleService.enrollCycle(accountId, cycleId);
 
         // Corrected verification for enrollCycle using (cycleId, accountId)
-        verify(cycleDao, times(1)).enrollCycle(cycleId, accountId);
+        verify(cycleDao, times(1)).enrollCycle(accountId, cycleId);
 
         // Second call to the service method (expected to throw an exception)
         // This will use the .thenReturn(true) part of the existsByAccountIdAndCycleId stubbing.

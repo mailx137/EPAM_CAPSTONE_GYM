@@ -99,12 +99,12 @@ public class CycleService {
         if (accountId <= 0 || cycleId <= 0) {
             throw new IllegalArgumentException("Account ID and Cycle ID must be greater than 0");
         }
-        if (accountCycleEnrollmentDao.existsByAccountIdAndCycleId(cycleId, accountId)) {
+        if (accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId)) {
             throw new AccountCycleEnrollmentAlreadyExistsException(
                     "Account with ID " + accountId + " is already enrolled in cycle with ID " + cycleId
             );
         }
 
-        cycleDao.enrollCycle(cycleId, accountId);
+        cycleDao.enrollCycle(accountId, cycleId);
     }
 }

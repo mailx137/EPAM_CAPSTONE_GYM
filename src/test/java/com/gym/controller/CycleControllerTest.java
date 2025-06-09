@@ -47,6 +47,8 @@ public class CycleControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", expectedMessage))
                 .andExpect(view().name("redirect:/my-cycles"));
-        verify(cycleService).enrollCycle(eq(1L), anyLong());
+        // Since we're using standaloneSetup without authentication,
+        // verify just that the cycleId is correct (1L)
+        verify(cycleService).enrollCycle(anyLong(), eq(1L));
     }
 }
