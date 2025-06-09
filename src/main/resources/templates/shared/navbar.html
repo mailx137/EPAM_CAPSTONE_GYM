@@ -6,17 +6,17 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" sec:authorize="hasRole('CLIENT')">
                 <li class="nav-item" sec:authorize="hasRole('CLIENT')">
-                    <a class="nav-link" th:href="@{/cycles}" th:text="#{navbar.my_cycles}">My Cycles</a>
+                    <a class="nav-link" th:href="@{/my-cycles}" th:text="#{navbar.my_cycles}">My Cycles</a>
                 </li>
 
             </ul>
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" sec:authorize="hasRole('ADMIN')">
+                <li class="nav-item" >
                     <a class="nav-link" th:href="@{/admin/accounts}" th:text="#{navbar.accounts}">Accounts</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                <li class="nav-item">
                     <a class="nav-link" th:href="@{/admin/cycles}" th:text="#{navbar.cycles}">Cycles</a>
                 </li>
             </ul>

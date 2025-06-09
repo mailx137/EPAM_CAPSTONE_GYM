@@ -31,11 +31,11 @@
             <td th:text="${cycle.published} ? #{yes} : #{no}"></td>
             <td th:text="${cycle.price}"></td>
             <td>
-<span class="badge rounded-pill"
-      th:classappend="${cycle.status.equals('PENDING')} ? 'text-bg-warning' :
-                             (${cycle.status.equals('COMPLETED')} ? 'text-bg-success' :
-                             (${cycle.status.equals('CANCELLED')} ? 'text-bg-danger' : 'text-bg-secondary'))"
-      th:text="#{${cycle.status}}"></span>
+                <span th:switch="${cycle.status.name}">
+                    <span th:case="ACTIVE" class="badge rounded-pill text-bg-success" th:text="#{${cycle.status}}"></span>
+                    <span th:case="PENDING" class="badge rounded-pill text-bg-warning" th:text="#{${cycle.status}}"></span>
+                    <span th:case="CANCELED" class="badge rounded-pill danger" th:text="#{${cycle.status}}"></span>
+                </span>
             </td>
             <td>
                 <form th:action="@{/order/pay/{cycle_id}(cycle_id=${cycle.id})}" method="post"
