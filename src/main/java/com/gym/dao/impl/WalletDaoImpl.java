@@ -113,4 +113,26 @@ public class WalletDaoImpl implements WalletDao, JdbcCleanup {
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public void payCycle(long accountId, long cycleId) {
+        String sql = "UPDATE wallets SET balance = balance - (SELECT price FROM cycles WHERE id = ?) WHERE account_id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, cycleId);
+            stmt.setLong(2, accountId);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw new RuntimeException("No wallet found for account ID: " + accountId + " or cycle ID: " + cycleId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error paying for cycle with ID: " + cycleId + " for account ID: " + accountId, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
 }

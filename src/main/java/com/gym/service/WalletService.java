@@ -18,4 +18,9 @@ public class WalletService {
     public void topUp(int amount, long clientId) {
         walletDao.topUp(amount, clientId);
     }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void payCycle(long accountId, long cycleId) {
+        walletDao.payCycle(accountId, cycleId);
+    }
 }

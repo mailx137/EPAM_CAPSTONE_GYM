@@ -12,4 +12,6 @@ public interface WalletDao {
     void topUp(int amount, long clientId);
 
     BigDecimal getBalanceByAccountId(long accountId);
+
+    void payCycle(long accountId, long cycleId);
 }
