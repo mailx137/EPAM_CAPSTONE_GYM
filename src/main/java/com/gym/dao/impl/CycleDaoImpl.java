@@ -2,6 +2,7 @@ package com.gym.dao.impl;
 
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
+import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.model.Cycle;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -245,6 +246,57 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             throw new RuntimeException("Error enrolling account " + accountId + " in cycle " + cycleId, e);
         } finally {
             cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public List<CycleWithEnrollmentDto> getCyclesWithEnrollmentsByAccountIdAndStatus(long accountId, String status) {
+        String sql = "SELECT c.*, ace.trainer_id AS enrollment_trainer_id, ace.status, ace.created_at AS enrollment_created_at, ace.updated_at AS enrollment_updated_at " +
+                "FROM cycles c " +
+                "JOIN account_cycle_enrollments ace ON c.id = ace.cycle_id " +
+                "WHERE ace.account_id = ?" +
+                (status != null ? " AND ace.status = ?" : "");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, accountId);
+
+            if (status != null) {
+                stmt.setString(2, status);
+            }
+
+            rs = stmt.executeQuery();
+
+            List<CycleWithEnrollmentDto> cyclesWithEnrollments = new ArrayList<>();
+
+            while (rs.next()) {
+                CycleWithEnrollmentDto cycleWithEnrollment = new CycleWithEnrollmentDto();
+                cycleWithEnrollment.setId(rs.getLong("id"));
+                cycleWithEnrollment.setName(rs.getString("name"));
+                cycleWithEnrollment.setDescription(rs.getString("description"));
+                cycleWithEnrollment.setDurationInDays(rs.getInt("duration_in_days"));
+                cycleWithEnrollment.setPublished(rs.getBoolean("published"));
+                cycleWithEnrollment.setPrice(rs.getBigDecimal("price"));
+                cycleWithEnrollment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                cycleWithEnrollment.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                cycleWithEnrollment.setAccountId(accountId);
+                cycleWithEnrollment.setStatus(AccountCycleEnrollmentStatus.valueOf(rs.getString("status")));
+                cycleWithEnrollment.setTrainerId(rs.getLong("enrollment_trainer_id"));
+                cycleWithEnrollment.setEnrollmentCreatedAt(rs.getTimestamp("enrollment_created_at").toLocalDateTime());
+                cycleWithEnrollment.setEnrollmentUpdatedAt(rs.getTimestamp("enrollment_updated_at").toLocalDateTime());
+
+                cyclesWithEnrollments.add(cycleWithEnrollment);
+            }
+            return cyclesWithEnrollments;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching cycles with enrollments for account " + accountId, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
         }
     }
 

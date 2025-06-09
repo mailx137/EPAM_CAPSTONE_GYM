@@ -3,7 +3,9 @@ package com.gym.service;
 import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
+import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.dto.response.Paginator;
+import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
 import com.gym.model.Cycle;
 import org.springframework.stereotype.Service;
@@ -106,5 +108,12 @@ public class CycleService {
         }
 
         cycleDao.enrollCycle(accountId, cycleId);
+    }
+
+    public List<CycleWithEnrollmentDto> getCyclesWithEnrollmentsByAccountIdAndStatus(long accountId, AccountCycleEnrollmentStatus status) {
+        if (accountId <= 0) {
+            throw new IllegalArgumentException("Account ID must be greater than 0");
+        }
+        return cycleDao.getCyclesWithEnrollmentsByAccountIdAndStatus(accountId, status != null ? status.name() : null);
     }
 }

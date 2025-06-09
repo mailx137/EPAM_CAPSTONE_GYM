@@ -16,7 +16,7 @@
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <a th:href="@{/orders}">
+                    <a th:href="@{/orders}" sec:authorize="hasRole('CLIENT')">
                         <button type="button" class="btn btn-primary position-relative">
                             <span th:text="#{navbar.orders}">Orders</span>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" th:text="${pendingEnrollmentsCount}">

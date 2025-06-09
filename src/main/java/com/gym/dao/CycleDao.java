@@ -1,6 +1,6 @@
 package com.gym.dao;
 
-import com.gym.enums.AccountCycleEnrollmentStatus;
+import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.model.Cycle;
 
 import java.util.List;
@@ -22,5 +22,7 @@ public interface CycleDao {
     List<Cycle> getPublishedCycles();
 
     void enrollCycle(long accountId, long cycleId);
+
+    List<CycleWithEnrollmentDto> getCyclesWithEnrollmentsByAccountIdAndStatus(long accountId, String status);
 
 }
