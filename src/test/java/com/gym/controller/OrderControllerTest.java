@@ -61,4 +61,17 @@ public class OrderControllerTest {
 
         verify(walletService).payCycle(anyLong(), eq(cycleId));
     }
+
+    @Test
+    void testAllCyclesByAccountId() throws Exception {
+        Long accountId = 1L;
+
+        mockMvc.perform(get("/my-cycles")
+                        .principal(() -> "user"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("cycles"))
+                .andExpect(view().name("cycle/list"));
+
+        verify(cycleService).getCyclesWithEnrollmentsByAccountIdAndStatus(anyLong(), isNull());
+    }
 }

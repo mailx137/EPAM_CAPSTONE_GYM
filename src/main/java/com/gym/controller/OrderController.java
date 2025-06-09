@@ -26,7 +26,7 @@ public class OrderController {
     @GetMapping("/orders")
     public String showOrders(@AuthenticationPrincipal AccountWithRolesAndWallet account, Model model) {
         model.addAttribute("cycles", cycleService.getCyclesWithEnrollmentsByAccountIdAndStatus(
-                        account.getId(), AccountCycleEnrollmentStatus.PENDING));
+                account.getId(), AccountCycleEnrollmentStatus.PENDING));
         return "order/list";
     }
 
@@ -34,5 +34,12 @@ public class OrderController {
     public String payCycle(@AuthenticationPrincipal AccountWithRolesAndWallet account, @PathVariable("cycle_id") Long cycle_id) {
         walletService.payCycle(account.getId(), cycle_id);
         return "redirect:/orders";
+    }
+
+    @GetMapping("/my-cycles")
+    public String showMyCycles(@AuthenticationPrincipal AccountWithRolesAndWallet account, Model model) {
+        model.addAttribute("cycles", cycleService.getCyclesWithEnrollmentsByAccountIdAndStatus(
+                account.getId(), null));
+        return "cycle/list";
     }
 }
