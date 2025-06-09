@@ -6,6 +6,7 @@ import com.gym.dto.request.RegisterFormDto;
 import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
+import com.gym.exception.NotEnoughBalanceException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -61,6 +62,14 @@ public class GlobalControllerAdvice {
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
 
         return "redirect:/";
+    }
+
+    @ExceptionHandler(NotEnoughBalanceException.class)
+    public String handleNotEnoughBalance(NotEnoughBalanceException ex, Model model, RedirectAttributes redirectAttributes) {
+        String msg = messageSource.getMessage("alert.not_enough.balance", null, ex.getMessage(), LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("errorMessage", msg);
+
+        return "redirect:/orders";
     }
 
     @ModelAttribute("currentUrl")
