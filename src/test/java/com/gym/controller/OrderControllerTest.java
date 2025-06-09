@@ -1,6 +1,7 @@
 package com.gym.controller;
 
 import com.gym.config.WebConfig;
+import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.service.CycleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +13,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @WebAppConfiguration
@@ -35,9 +35,12 @@ public class OrderControllerTest {
 
     @Test
     void testShowOrders() throws Exception {
-        mockMvc.perform(get("/orders"))
+        mockMvc.perform(get("/orders")
+                .principal(() -> "user"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("orders/list"));
-        verify(cycleService).getCyclesWithEnrollmentsByAccountIdAndStatus(anyLong(), null);
+                .andExpect(model().attributeExists("cycles"))
+                .andExpect(view().name("order/list"));
+
+        verify(cycleService).getCyclesWithEnrollmentsByAccountIdAndStatus(anyLong(), eq(AccountCycleEnrollmentStatus.PENDING));
     }
 }

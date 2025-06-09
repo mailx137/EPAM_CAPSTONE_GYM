@@ -20,7 +20,8 @@ public class OrderController {
 
     @GetMapping("/orders")
     public String showOrders(@AuthenticationPrincipal AccountWithRolesAndWallet account, Model model) {
-//        model.addAllAttributes("cycles", cycleService.getCyclesWithEnrollmentsByAccountIdAndStatus(account.getId(), AccountCycleEnrollmentStatus.PENDING));
-        return "orders/list";
+        model.addAttribute("cycles", cycleService.getCyclesWithEnrollmentsByAccountIdAndStatus(
+                        account.getId(), AccountCycleEnrollmentStatus.PENDING));
+        return "order/list";
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{shared/layout}">
+
+<head>
+  <title th:text="#{titles.orders}"></title>
+</head>
+
+<body>
+<section layout:fragment="content" class="m-5">
+  <table class="table table-striped table-hover table-bordered">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th th:text="#{labels.name}"></th>
+      <th th:text="#{labels.description}"></th>
+      <th th:text="#{labels.duration_in_days}"></th>
+      <th th:text="#{labels.published}"></th>
+      <th th:text="#{labels.price}"></th>
+      <th th:text="#{labels.actions}"></th>
+      <th th:text="#{labels.status}"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cycle : ${cycles}">
+      <th th:text="${cycle.id}"></th>
+      <td th:text="${cycle.name}"></td>
+      <td th:text="${cycle.description}"></td>
+      <td th:text="${cycle.durationInDays}"></td>
+      <td th:text="${cycle.published} ? #{yes} : #{no}"></td>
+      <td th:text="${cycle.price}"></td>
+      <td>
+<span class="badge rounded-pill"
+              th:classappend="${cycle.status.equals('PENDING')} ? 'text-bg-warning' :
+                             (${cycle.status.equals('COMPLETED')} ? 'text-bg-success' :
+                             (${cycle.status.equals('CANCELLED')} ? 'text-bg-danger' : 'text-bg-secondary'))"
+              th:text="#{${cycle.status}}"></span>
+      </td>
+      <td>
+<form th:action="@{/admin/cycle/delete/{id}(id=${cycle.id})}" method="post"
+      style="display:inline;">
+  <input type="hidden" name="_method" value="delete"/>
+  <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>
+</form>
+        <form th:action="@{/order/pay/{id}(id=${cycle.id})}" method="post"
+              style="display:inline; margin-left: 5px;">
+          <button class="btn btn-primary btn-sm" type="submit" th:text="#{buttons.pay}">Pay</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+</body>
+
+</html>

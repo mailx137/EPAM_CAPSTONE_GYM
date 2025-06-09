@@ -46,7 +46,7 @@ public class CycleControllerTest {
         mockMvc.perform(post("/cycle/enroll/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("successMessage", expectedMessage))
-                .andExpect(view().name("redirect:/my-cycles"));
+                .andExpect(view().name("redirect:/orders"));
         verify(cycleService).enrollCycle(anyLong(), eq(1L));
     }
 }
