@@ -300,4 +300,26 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
         }
     }
 
+    @Override
+    public void changeCycleStatus(long cycleId, String status) {
+        String sql = "UPDATE account_cycle_enrollments SET status = ? WHERE cycle_id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, status);
+            stmt.setLong(2, cycleId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Cycle with id " + cycleId + " not found or status unchanged");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error changing status of cycle with id " + cycleId, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
+
 }

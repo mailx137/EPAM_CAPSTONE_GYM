@@ -25,4 +25,5 @@ public interface CycleDao {
 
     List<CycleWithEnrollmentDto> getCyclesWithEnrollmentsByAccountIdAndStatus(long accountId, String status);
 
+    void changeCycleStatus(long cycleId, String status);
 }

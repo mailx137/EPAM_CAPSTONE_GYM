@@ -204,7 +204,22 @@ public class CycleDaoTest extends AbstractDaoTestConfig {
         List<CycleWithEnrollmentDto> cycles = cycleDao.getCyclesWithEnrollmentsByAccountIdAndStatus(1L, AccountCycleEnrollmentStatus.PENDING.name());
         assertNotNull(cycles);
         assertEquals(2, cycles.size(), "There should be 2 cycles with pending enrollments for account 1");
+    }
 
+    @Sql(statements = {
+            "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (1, 'Cycle 1', 'Description 1', 30, true, 100.00)",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password')",
+            "INSERT IGNORE INTO account_cycle_enrollments (account_id, cycle_id, status) VALUES (1, 1, 'PENDING')"}
+    )
+    @Test
+    void testChangeCycleStatus() {
+        long cycleId = 1L;
+        AccountCycleEnrollmentStatus newStatus = AccountCycleEnrollmentStatus.ACTIVE;
 
+        cycleDao.changeCycleStatus(cycleId, newStatus.name());
+
+        Optional<AccountCycleEnrollment> enrollment = accountCycleEnrollmentDao.getByAccountIdAndCycleId(1L, cycleId);
+        assertTrue(enrollment.isPresent(), "Enrollment should exist after status change");
+        assertEquals(newStatus, enrollment.get().getStatus(), "The status should be updated to ACTIVE");
     }
 }
