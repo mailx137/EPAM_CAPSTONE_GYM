@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -78,6 +79,43 @@ public class AccountCycleEnrollmentDaoImpl implements AccountCycleEnrollmentDao,
             return false;
         } catch (SQLException e) {
             throw new RuntimeException("Error checking if enrollment exists for account " + accountId + " and cycle " + cycleId, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public List<AccountCycleEnrollment> getAccountCyclePendingEnrollments(Long accountId) {
+        String sql = "SELECT * FROM account_cycle_enrollments WHERE account_id = ? AND status = 'PENDING'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, accountId);
+            rs = stmt.executeQuery();
+            List<AccountCycleEnrollment> enrollments = new java.util.ArrayList<>();
+            while (rs.next()) {
+                AccountCycleEnrollment enrollment = new AccountCycleEnrollment();
+                enrollment.setId(rs.getLong("id"));
+                enrollment.setAccountId(rs.getLong("account_id"));
+                enrollment.setCycleId(rs.getLong("cycle_id"));
+                long trainerId = rs.getLong("trainer_id");
+                if (rs.wasNull()) {
+                    enrollment.setTrainerId(null);
+                } else {
+                    enrollment.setTrainerId(trainerId);
+                }
+                enrollment.setStatus(AccountCycleEnrollmentStatus.valueOf(rs.getString("status")));
+                enrollment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                enrollment.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                enrollments.add(enrollment);
+            }
+            return enrollments;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving pending enrollments for account " + accountId, e);
         } finally {
             cleanupResources(rs, stmt, conn, dataSource);
         }
