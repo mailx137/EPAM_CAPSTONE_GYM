@@ -120,4 +120,27 @@ public class AccountCycleEnrollmentDaoImpl implements AccountCycleEnrollmentDao,
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public int getAccountCyclePendingEnrollmentsCount(Long accountId) {
+        String sql = "SELECT COUNT(*) FROM account_cycle_enrollments WHERE account_id = ? AND status = 'PENDING'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, accountId);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting pending enrollments for account " + accountId, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
 }
