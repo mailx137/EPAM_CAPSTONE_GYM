@@ -30,7 +30,7 @@ public class OrderController {
         return "order/list";
     }
 
-    @PostMapping("/orders/pay/{cycle_id}")
+    @PostMapping("/order/pay/{cycle_id}")
     public String payCycle(@AuthenticationPrincipal AccountWithRolesAndWallet account, @PathVariable("cycle_id") Long cycle_id) {
         walletService.payCycle(account.getId(), cycle_id);
         return "redirect:/orders";

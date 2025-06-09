@@ -4,6 +4,7 @@ import com.gym.dao.AccountDao;
 import com.gym.dao.CycleDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.response.AccountWithRolesAndWallet;
+import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.exception.NotEnoughBalanceException;
 import com.gym.model.Cycle;
 import org.springframework.context.MessageSource;
@@ -43,9 +44,10 @@ public class WalletService {
         ));
 
         if (account.getWalletBalance().compareTo(cycle.getPrice()) < 0) {
-            throw new NotEnoughBalanceException(messageSource.getMessage("not.enough.balance", null, LocaleContextHolder.getLocale()));
+            throw new NotEnoughBalanceException(messageSource.getMessage("alert.not_enough.balance", null, LocaleContextHolder.getLocale()));
         }
 
         walletDao.payCycle(accountId, cycleId);
+        cycleDao.changeCycleStatus(cycleId, AccountCycleEnrollmentStatus.ACTIVE.name());
     }
 }
