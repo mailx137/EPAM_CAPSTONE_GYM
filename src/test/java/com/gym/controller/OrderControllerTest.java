@@ -42,7 +42,7 @@ public class OrderControllerTest {
     @Test
     void testShowOrders() throws Exception {
         mockMvc.perform(get("/orders")
-                .principal(() -> "user"))
+                        .principal(() -> "user"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("cycles"))
                 .andExpect(view().name("order/list"));
@@ -52,11 +52,13 @@ public class OrderControllerTest {
 
     @Test
     void testPayCycle() throws Exception {
-        mockMvc.perform(post("/orders/pay/{cycle_id}", "1")
-                .principal(() -> "user"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/orders"));
+        Long cycleId = 1L;
 
-        verify(walletService).payCycle(anyLong(), eq(1L));
+        mockMvc.perform(post("/order/pay/" + cycleId)
+                        .principal(() -> "user"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders"));
+
+        verify(walletService).payCycle(anyLong(), eq(cycleId));
     }
 }

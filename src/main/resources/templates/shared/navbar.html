@@ -6,6 +6,12 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item" sec:authorize="hasRole('CLIENT')">
+                    <a class="nav-link" th:href="@{/cycles}" th:text="#{navbar.my_cycles}">My Cycles</a>
+                </li>
+
+            </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/admin/accounts}" th:text="#{navbar.accounts}">Accounts</a>
@@ -16,15 +22,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <a th:href="@{/orders}" sec:authorize="hasRole('CLIENT')">
-                        <button type="button" class="btn btn-primary position-relative">
-                            <span th:text="#{navbar.orders}">Orders</span>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" th:text="${pendingEnrollmentsCount}">
-    99+
-    <span class="visually-hidden">unread messages</span>
-  </span>
-                        </button>
-                    </a>
+                <a th:href="@{/orders}" sec:authorize="hasRole('CLIENT')">
+                    <button type="button" class="btn btn-primary position-relative">
+                        <span th:text="#{navbar.orders}">Orders</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                              th:text="${pendingEnrollmentsCount}"></span>
+                    </button>
+                </a>
                 <li class="nav-item" sec:authorize="hasRole('CLIENT')">
                     <a class="nav-link" th:href="@{/wallet/top-up}" th:text="#{navbar.top_up_balance}"></a>
 
