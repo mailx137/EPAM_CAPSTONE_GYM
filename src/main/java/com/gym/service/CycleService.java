@@ -101,7 +101,7 @@ public class CycleService {
         }
         if (accountCycleEnrollmentDao.existsByAccountIdAndCycleId(accountId, cycleId)) {
             throw new AccountCycleEnrollmentAlreadyExistsException(
-                    "Account with ID " + accountId + " is already enrolled in cycle with ID " + cycleId
+                    "Account is already enrolled in cycle" + cycleId
             );
         }
 

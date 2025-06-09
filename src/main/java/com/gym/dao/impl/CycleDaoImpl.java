@@ -226,7 +226,7 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
     }
 
     @Override
-    public void enrollCycle(long cycleId, long accountId) {
+    public void enrollCycle(long accountId, long cycleId) {
         String sql = "INSERT INTO account_cycle_enrollments (account_id, cycle_id, status, created_at) VALUES (?, ?, ?, NOW())";
         Connection conn = null;
         PreparedStatement stmt = null;
