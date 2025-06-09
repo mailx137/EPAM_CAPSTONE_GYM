@@ -1,11 +1,11 @@
 package com.gym.controller.advice;
 
+import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
 import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
-import com.gym.model.Account;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -23,13 +23,18 @@ import java.math.BigDecimal;
 public class GlobalControllerAdvice {
     private WalletDao walletDao;
     private MessageSource messageSource;
+    private AccountCycleEnrollmentDao accountCycleEnrollmentDao;
 
     private Environment env;
 
-    public GlobalControllerAdvice(Environment env, WalletDao walletDao, MessageSource messageSource) {
+    public GlobalControllerAdvice(
+            Environment env,
+            WalletDao walletDao,
+            MessageSource messageSource, AccountCycleEnrollmentDao accountCycleEnrollmentDao) {
         this.env = env;
         this.walletDao = walletDao;
         this.messageSource = messageSource;
+        this.accountCycleEnrollmentDao = accountCycleEnrollmentDao;
     }
 
     @ModelAttribute("activeProfile")
@@ -69,6 +74,13 @@ public class GlobalControllerAdvice {
             return null;
         }
         return walletDao.getBalanceByAccountId(account.getId());
+    }
 
+    @ModelAttribute("pendingEnrollmentsCount")
+    public int pendingEnrollmentsCount(@AuthenticationPrincipal AccountWithRolesAndWallet account) {
+        if (account == null || !account.getRoles().contains("CLIENT")) {
+            return 0;
+        }
+        return accountCycleEnrollmentDao.getAccountCyclePendingEnrollmentsCount(account.getId());
     }
 }
