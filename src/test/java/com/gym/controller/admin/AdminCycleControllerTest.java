@@ -187,9 +187,7 @@ public class AdminCycleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/cycle/active-list"))
                 .andExpect(model().attributeExists("cycles"))
-                .andExpect(model().attributeExists("statusList"))
                 .andExpect(model().attributeExists("trainerList"))
-                .andExpect(model().attribute("statusList", instanceOf(List.class)))
                 .andExpect(model().attribute("trainerList", instanceOf(List.class)))
                 .andExpect(model().attribute("cycles", instanceOf(Paginator.class)));
         verify(cycleService, times(1)).getPaginatedActiveCyclesWithTrainer(anyInt(), anyInt());

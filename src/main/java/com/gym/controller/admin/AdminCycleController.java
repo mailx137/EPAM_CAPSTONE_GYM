@@ -2,6 +2,7 @@ package com.gym.controller.admin;
 
 import com.gym.dto.request.CycleFormDto;
 import com.gym.model.Cycle;
+import com.gym.service.AccountService;
 import com.gym.service.CycleService;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
@@ -18,10 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminCycleController {
     private CycleService cycleService;
     private MessageSource messageSource;
+    private AccountService accountService;
 
-    public AdminCycleController(CycleService cycleService, MessageSource messageSource) {
+    public AdminCycleController(CycleService cycleService, MessageSource messageSource, AccountService accountService) {
         this.cycleService = cycleService;
         this.messageSource = messageSource;
+        this.accountService = accountService;
     }
 
     @GetMapping("/admin/cycles")
@@ -87,6 +90,7 @@ public class AdminCycleController {
                                        @RequestParam(required = false, defaultValue = "5") Integer size,
                                        Model model) {
         model.addAttribute("cycles", cycleService.getPaginatedActiveCyclesWithTrainer(page, size));
+        model.addAttribute("trainerList", accountService.getAllTrainersIdAndEmail());
         return "admin/cycle/active-list";
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -79,6 +80,14 @@ public class AccountService {
     }
 
     public List<TrainerIdEmailDto> getAllTrainersIdAndEmail() {
-        return accountDao.getAllTrainers();
+        List<TrainerIdEmailDto> trainers = new ArrayList<>();
+        List<Account> accounts = accountDao.getAccountsByRole(RoleType.TRAINER.name());
+        for (Account account : accounts) {
+            TrainerIdEmailDto trainer = new TrainerIdEmailDto();
+            trainer.setId(account.getId());
+            trainer.setEmail(account.getEmail());
+            trainers.add(trainer);
+        }
+        return trainers;
     }
 }
