@@ -16,6 +16,7 @@ public class ActiveCycleListDto {
     private String clientEmail;
     private int durationInDays;
     private BigDecimal price;
+    private Long enrollmentId;
     private Long trainerId;
     private String trainerEmail;
     private AccountCycleEnrollmentStatus status;

@@ -29,4 +29,6 @@ public interface CycleDao {
     void changeCycleStatus(long cycleId, String status);
 
     List<ActiveCycleListDto> getActiveCyclesWithTrainer(int page, int size);
+
+    void assignTrainerToCycle(long accountCycleEnrollmentId, long trainerId);
 }

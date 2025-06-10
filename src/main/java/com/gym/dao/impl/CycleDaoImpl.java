@@ -326,7 +326,7 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
 
     @Override
     public List<ActiveCycleListDto> getActiveCyclesWithTrainer(int page, int size) {
-        String sql = "SELECT c.id, c.name, c.duration_in_days, c.price, ace.trainer_id, trainer.email AS trainer_email, client.id AS client_id, client.email AS client_email, ace.status  " +
+        String sql = "SELECT c.id, c.name, c.duration_in_days, c.price, ace.trainer_id, trainer.email AS trainer_email, ace.id AS enrollment_id, client.id AS client_id, client.email AS client_email, ace.status  " +
                 "FROM cycles c " +
                 "JOIN account_cycle_enrollments ace ON c.id = ace.cycle_id " +
                 "LEFT JOIN accounts trainer ON ace.trainer_id = trainer.id " +
@@ -355,6 +355,7 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
                 activeCycle.setDurationInDays(rs.getInt("duration_in_days"));
                 activeCycle.setPrice(rs.getBigDecimal("price"));
                 activeCycle.setTrainerId(rs.getLong("trainer_id"));
+                activeCycle.setEnrollmentId(rs.getLong("enrollment_id"));
                 activeCycle.setTrainerEmail(rs.getString("trainer_email"));
                 activeCycle.setClientId(rs.getString("client_id"));
                 activeCycle.setClientEmail(rs.getString("client_email"));
@@ -368,6 +369,29 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
         } finally {
             cleanupResources(rs, stmt, conn, dataSource);
         }
+    }
+
+    @Override
+    public void assignTrainerToCycle(long accountCycleEnrollmentId, long trainerId) {
+        String sql = "UPDATE account_cycle_enrollments SET trainer_id = ? WHERE id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, trainerId);
+            stmt.setLong(2, accountCycleEnrollmentId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Account cycle enrollment with id " + accountCycleEnrollmentId + " not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error assigning trainer to cycle with enrollment id " + accountCycleEnrollmentId, e);
+        } finally {
+            cleanupResources(null, stmt, conn, dataSource);
+        }
+
     }
 
 }

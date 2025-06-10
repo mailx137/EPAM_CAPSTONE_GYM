@@ -93,4 +93,15 @@ public class AdminCycleController {
         model.addAttribute("trainerList", accountService.getAllTrainersIdAndEmail());
         return "admin/cycle/active-list";
     }
+
+    @PostMapping("/admin/cycle/assign-trainer/{enrollment_id}")
+    public String assignTrainerToCycle(@PathVariable("enrollment_id") Long enrollmentId,
+                                       @RequestParam("trainerId") Long trainerId,
+                                       RedirectAttributes redirectAttributes) {
+        cycleService.assignTrainerToCycle(enrollmentId, trainerId);
+        String successMessage = messageSource.getMessage("alert.cycle.assign.trainer.success", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        return "redirect:/admin/cycle/active-list";
+    }
+
 }

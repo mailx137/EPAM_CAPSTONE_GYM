@@ -47,9 +47,17 @@
             <td th:text="${cycle.trainerEmail}"></td>
             <td th:text="${cycle.status.name}"></td>
             <td>
-                <a class="btn btn-primary btn-sm"
-                   th:href="@{/admin/cycle/change-status-trainer/{id}(id=${cycle.id})}"
-                   th:text="#{buttons.edit}">Edit Cycle</a>
+                <form th:action="@{/admin/cycle/assign-trainer/{enrollment_id}(enrollment_id=${cycle.enrollmentId})}" method="post" class="d-flex align-items-center">
+                    <select class="form-select form-select-sm me-2" name="trainerId" required>
+                        <option value="" th:text="#{labels.select_trainer}">Select trainer</option>
+                        <option th:each="trainer : ${trainerList}"
+                                th:value="${trainer.id}"
+                                th:text="${trainer.email}"
+                                th:selected="${trainer.email == cycle.trainerEmail}">
+                        </option>
+                    </select>
+                    <button type="submit" class="btn btn-success btn-sm" th:text="#{buttons.save}">Assign</button>
+                </form>
             </td>
         </tr>
         </tbody>

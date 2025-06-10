@@ -130,4 +130,15 @@ public class CycleService {
         }
         return cycleDao.getCyclesWithEnrollmentsByAccountIdAndStatus(accountId, status != null ? status.name() : null);
     }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void assignTrainerToCycle(long cycleId, Long trainerId) {
+        if (cycleId <= 0) {
+            throw new IllegalArgumentException("Cycle ID must be greater than 0");
+        }
+        if (trainerId != null && trainerId <= 0) {
+            throw new IllegalArgumentException("Trainer ID must be greater than 0 if provided");
+        }
+        cycleDao.assignTrainerToCycle(cycleId, trainerId);
+    }
 }
