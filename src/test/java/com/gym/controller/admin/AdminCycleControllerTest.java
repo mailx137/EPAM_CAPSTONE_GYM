@@ -172,4 +172,20 @@ public class AdminCycleControllerTest {
                 .andExpect(view().name("admin/cycle/form"));
         verify(cycleService, times(1)).findCycleById(1L);
     }
+
+    @Test
+    void testShowActiveCyclesList() throws Exception {
+//        Paginator<Cycle> cyclePaginator = new Paginator<>(0, 1, 5, List.of(new Cycle()));
+//        when(cycleService.getPaginatedActiveCycles(1, 5)).thenReturn(cyclePaginator);
+//
+//        mockMvc.perform(get("/admin/cycle/active"))
+//                .andExpect(status().isOk())
+//                .andExpect(model().attributeExists("cycles"))
+//                .andExpect(model().attribute("cycles",
+//                        allOf(
+//                                instanceOf(Paginator.class),
+//                                hasProperty("items", everyItem(instanceOf(Cycle.class)))
+//                        )))
+//                .andExpect(view().name("admin/cycle/active-list"));
+    }
 }

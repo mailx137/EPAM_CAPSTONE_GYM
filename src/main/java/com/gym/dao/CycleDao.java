@@ -1,5 +1,6 @@
 package com.gym.dao;
 
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.model.Cycle;
 
@@ -26,4 +27,6 @@ public interface CycleDao {
     List<CycleWithEnrollmentDto> getCyclesWithEnrollmentsByAccountIdAndStatus(long accountId, String status);
 
     void changeCycleStatus(long cycleId, String status);
+
+    List<ActiveCycleListDto> getActiveCyclesWithTrainer(int page, int size);
 }

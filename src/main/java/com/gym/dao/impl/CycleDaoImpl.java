@@ -2,6 +2,7 @@ package com.gym.dao.impl;
 
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.model.Cycle;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -319,6 +321,52 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             throw new RuntimeException("Error changing status of cycle with id " + cycleId, e);
         } finally {
             cleanupResources(null, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public List<ActiveCycleListDto> getActiveCyclesWithTrainer(int page, int size) {
+        String sql = "SELECT c.id, c.name, c.duration_in_days, c.price, ace.trainer_id, trainer.email AS trainer_email, client.id AS client_id, client.email AS client_email, ace.status  " +
+                "FROM cycles c " +
+                "JOIN account_cycle_enrollments ace ON c.id = ace.cycle_id " +
+                "JOIN accounts trainer ON ace.trainer_id = trainer.id " +
+                "JOIN accounts client ON ace.account_id = client.id " +
+                "WHERE ace.status = ? " +
+                "ORDER BY c.id LIMIT ? OFFSET ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, AccountCycleEnrollmentStatus.ACTIVE.name());
+            stmt.setInt(2, size);
+            stmt.setInt(3, (page - 1) * size);
+            rs = stmt.executeQuery();
+
+            List<ActiveCycleListDto> activeCycles = new ArrayList<>();
+
+            while (rs.next()) {
+                ActiveCycleListDto activeCycle = new ActiveCycleListDto();
+                activeCycle.setId(rs.getLong("id"));
+                activeCycle.setName(rs.getString("name"));
+                activeCycle.setDurationInDays(rs.getInt("duration_in_days"));
+                activeCycle.setPrice(rs.getBigDecimal("price"));
+                activeCycle.setTrainerId(rs.getLong("trainer_id"));
+                activeCycle.setTrainerEmail(rs.getString("trainer_email"));
+                activeCycle.setClientId(rs.getString("client_id"));
+                activeCycle.setClientEmail(rs.getString("client_email"));
+                activeCycle.setStatus(AccountCycleEnrollmentStatus.valueOf(rs.getString("status")));
+
+                activeCycles.add(activeCycle);
+            }
+            return activeCycles;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching active cycles with trainer", e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
         }
     }
 

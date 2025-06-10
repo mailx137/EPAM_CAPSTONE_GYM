@@ -1,5 +1,6 @@
 package com.gym.dao;
 
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.model.AccountCycleEnrollment;
@@ -221,5 +222,23 @@ public class CycleDaoTest extends AbstractDaoTestConfig {
         Optional<AccountCycleEnrollment> enrollment = accountCycleEnrollmentDao.getByAccountIdAndCycleId(1L, cycleId);
         assertTrue(enrollment.isPresent(), "Enrollment should exist after status change");
         assertEquals(newStatus, enrollment.get().getStatus(), "The status should be updated to ACTIVE");
+    }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (1, 'Cycle 1', 'Description 1', 30, true, 100.00)",
+            "INSERT IGNORE INTO cycles (id, name, description, duration_in_days, published, price) VALUES (2, 'Cycle 2', 'Description 2', 60, false, 200.00)",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'test@test.com', 'password')",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (3, 'trainer@test.com', 'password')",
+            "INSERT IGNORE INTO account_cycle_enrollments (account_id, cycle_id, status, trainer_id) VALUES (1, 1, 'ACTIVE', 3)",
+            "INSERT IGNORE INTO account_cycle_enrollments (account_id, cycle_id, status, trainer_id) VALUES (1, 2, 'ACTIVE', 3)"
+    })
+    @Test
+    void testActiveCyclesListWithTrainer() {
+        List<ActiveCycleListDto> activeCycles = cycleDao.getActiveCyclesWithTrainer(1, 10);
+        assertNotNull(activeCycles, "Active cycles list should not be null");
+        assertEquals("trainer@test.com", activeCycles.get(0).getTrainerEmail());
+        assertEquals("trainer@test.com", activeCycles.get(1).getTrainerEmail());
+
+
     }
 }

@@ -3,6 +3,7 @@ package com.gym.service;
 import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.dto.response.Paginator;
 import com.gym.enums.AccountCycleEnrollmentStatus;
@@ -17,8 +18,8 @@ import java.util.Optional;
 
 @Service
 public class CycleService {
-    private CycleDao cycleDao;
-    private AccountCycleEnrollmentDao accountCycleEnrollmentDao;
+    private final CycleDao cycleDao;
+    private final AccountCycleEnrollmentDao accountCycleEnrollmentDao;
 
     public CycleService(CycleDao cycleDao, AccountCycleEnrollmentDao accountCycleEnrollmentDao) {
         this.cycleDao = cycleDao;
@@ -34,6 +35,19 @@ public class CycleService {
                 page,
                 size,
                 cycleDao.getCyclesByPage(page, size)
+        );
+    }
+
+    public Paginator<ActiveCycleListDto> getPaginatedAllCyclesByTrainerId(Integer page, Integer size) {
+        if (page == null || size == null || page < 1 || size < 1) {
+            throw new IllegalArgumentException("Page and size must be greater than 0");
+        }
+
+        return new Paginator<>(
+                cycleDao.getCount(),
+                page,
+                size,
+                cycleDao.getActiveCyclesWithTrainer(page, size)
         );
     }
 
