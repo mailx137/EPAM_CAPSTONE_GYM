@@ -31,4 +31,6 @@ public interface CycleDao {
     List<ActiveCycleListDto> getActiveCyclesWithTrainer(int page, int size);
 
     void assignTrainerToCycle(long accountCycleEnrollmentId, long trainerId);
+
+    int getActiveCount();
 }

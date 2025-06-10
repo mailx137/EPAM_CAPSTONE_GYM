@@ -26,4 +26,5 @@ public interface AccountDao {
     Optional<AccountWithRolesAndWallet> getAccountWithRolesAndWalletByEmail(String email);
 
     List<Account> getAccountsByRole(String role);
+
 }

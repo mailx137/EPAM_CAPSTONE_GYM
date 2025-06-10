@@ -44,7 +44,7 @@ public class CycleService {
         }
 
         return new Paginator<>(
-                cycleDao.getCount(),
+                cycleDao.getActiveCount(),
                 page,
                 size,
                 cycleDao.getActiveCyclesWithTrainer(page, size)

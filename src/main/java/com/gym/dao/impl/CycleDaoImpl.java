@@ -394,4 +394,28 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
 
     }
 
+    @Override
+    public int getActiveCount() {
+        String sql = "SELECT COUNT(*) FROM account_cycle_enrollments WHERE status = 'ACTIVE'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching active cycle count", e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
 }
