@@ -49,8 +49,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public String handleAccountAlreadyExists(AccountAlreadyExistsException ex, Model model) {
-        RegisterFormDto emptyForm = new RegisterFormDto();
-        model.addAttribute("registrationForm", emptyForm);
+        model.addAttribute("registerForm", new RegisterFormDto());
         model.addAttribute("errorMessage", ex.getMessage());
 
         return "register/form";

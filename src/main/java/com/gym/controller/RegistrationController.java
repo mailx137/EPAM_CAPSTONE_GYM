@@ -42,6 +42,7 @@ public class RegistrationController {
     public String register(@Valid @ModelAttribute("registerForm") RegisterFormDto registerForm,
                            BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("registerForm", registerForm);
             return "register/form";
         }
 
