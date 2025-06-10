@@ -3,6 +3,7 @@ package com.gym.controller.admin;
 
 import com.gym.config.WebConfig;
 import com.gym.dto.request.CycleFormDto;
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.Paginator;
 import com.gym.model.Cycle;
 import com.gym.service.CycleService;
@@ -175,17 +176,14 @@ public class AdminCycleControllerTest {
 
     @Test
     void testShowActiveCyclesList() throws Exception {
-//        Paginator<Cycle> cyclePaginator = new Paginator<>(0, 1, 5, List.of(new Cycle()));
-//        when(cycleService.getPaginatedActiveCycles(1, 5)).thenReturn(cyclePaginator);
-//
-//        mockMvc.perform(get("/admin/cycle/active"))
-//                .andExpect(status().isOk())
-//                .andExpect(model().attributeExists("cycles"))
-//                .andExpect(model().attribute("cycles",
-//                        allOf(
-//                                instanceOf(Paginator.class),
-//                                hasProperty("items", everyItem(instanceOf(Cycle.class)))
-//                        )))
-//                .andExpect(view().name("admin/cycle/active-list"));
+        when(cycleService.getPaginatedActiveCyclesWithTrainer(1, 5)).thenReturn(new Paginator<>(0, 1, 5, List.of(new ActiveCycleListDto())));
+        mockMvc.perform(get("/admin/cycle/active-list")
+                        .param("page", "1")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/cycle/active-list"))
+                .andExpect(model().attributeExists("cycles"))
+                .andExpect(model().attribute("cycles", instanceOf(Paginator.class)));
+        verify(cycleService, times(1)).getPaginatedActiveCyclesWithTrainer(anyInt(), anyInt());
     }
 }

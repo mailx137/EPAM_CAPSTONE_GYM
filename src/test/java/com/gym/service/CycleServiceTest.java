@@ -3,6 +3,7 @@ package com.gym.service;
 import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
+import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.Paginator;
 import com.gym.exception.AccountCycleEnrollmentAlreadyExistsException;
 import com.gym.model.AccountCycleEnrollment;
@@ -116,5 +117,17 @@ public class CycleServiceTest extends AbstractServiceTest{
         });
     }
 
+    @Test
+    void testGetActiveCyclesWithTrainer() {
+        List<ActiveCycleListDto> activeCycles = List.of(
+                new ActiveCycleListDto(), new ActiveCycleListDto(), new ActiveCycleListDto());
+        when(cycleDao.getActiveCyclesWithTrainer(1, 10)).thenReturn(activeCycles);
+
+        Paginator<ActiveCycleListDto> paginator = cycleService.getPaginatedActiveCyclesWithTrainer(1, 10);
+
+        assertNotNull(paginator.getItems());
+        assertEquals(activeCycles.size(), paginator.getItems().size());
+        verify(cycleDao, times(1)).getActiveCyclesWithTrainer(1, 10);
+    }
 }
 

@@ -38,7 +38,7 @@ public class CycleService {
         );
     }
 
-    public Paginator<ActiveCycleListDto> getPaginatedAllCyclesByTrainerId(Integer page, Integer size) {
+    public Paginator<ActiveCycleListDto> getPaginatedActiveCyclesWithTrainer(Integer page, Integer size) {
         if (page == null || size == null || page < 1 || size < 1) {
             throw new IllegalArgumentException("Page and size must be greater than 0");
         }

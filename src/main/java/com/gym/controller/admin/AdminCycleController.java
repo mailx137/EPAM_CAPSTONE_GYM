@@ -82,4 +82,11 @@ public class AdminCycleController {
         return "redirect:/admin/cycles";
     }
 
+    @GetMapping("/admin/cycle/active-list")
+    public String showActiveCyclesList(@RequestParam(required = false, defaultValue = "1") Integer page,
+                                       @RequestParam(required = false, defaultValue = "5") Integer size,
+                                       Model model) {
+        model.addAttribute("cycles", cycleService.getPaginatedActiveCyclesWithTrainer(page, size));
+        return "admin/cycle/active-list";
+    }
 }
