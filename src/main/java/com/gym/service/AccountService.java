@@ -6,6 +6,7 @@ import com.gym.dao.WalletDao;
 import com.gym.dto.request.RegisterFormDto;
 import com.gym.dto.response.AccountWithRolesAndWallet;
 import com.gym.dto.response.Paginator;
+import com.gym.dto.response.TrainerIdEmailDto;
 import com.gym.enums.RoleType;
 import com.gym.exception.AccountAlreadyExistsException;
 import com.gym.model.Account;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -74,5 +76,9 @@ public class AccountService {
     @Transactional(rollbackFor = SQLException.class)
     public void deleteAccount(long id) {
         accountDao.deleteById(id);
+    }
+
+    public List<TrainerIdEmailDto> getAllTrainersIdAndEmail() {
+        return accountDao.getAllTrainers();
     }
 }

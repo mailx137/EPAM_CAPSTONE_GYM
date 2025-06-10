@@ -3,12 +3,12 @@
       layout:decorate="~{shared/layout}">
 
 <head>
-    <title th:text="#{titles.accounts}"></title>
+    <title th:text="#{titles.active_cycles}"></title>
 </head>
 
 <body>
 <section layout:fragment="content" class="m-5">
-    <form class="row g-3 mb-3" method="get" th:action="@{/admin/cycles}">
+    <form class="row g-3 mb-3" method="get" th:action="@{/admin/cycle/active-list}">
         <div class="col-auto">
             <select class="form-select form-select-sm" id="sizeSelect" name="size" onchange="this.form.submit()"
                     th:value="${cycles.pageSize}">
@@ -20,20 +20,18 @@
         </div>
         <input type="hidden" name="page" th:value="${cycles.currentPage}"/>
     </form>
-    <div class="d-flex justify-content-end mb-3">
-        <a class="btn btn-success" th:href="@{/admin/cycle/add}" th:text="#{buttons.add}">Add New Cycle</a>
-    </div>
     <table class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
             <th scope="col">ID</th>
             <th th:text="#{labels.name}"></th>
-            <th th:text="#{labels.description}"></th>
+            <th th:text="#{labels.client_id}"></th>
+            <th th:text="#{labels.client_id}"></th>
             <th th:text="#{labels.duration_in_days}"></th>
-            <th th:text="#{labels.published}"></th>
             <th th:text="#{labels.price}"></th>
-            <th th:text="#{labels.created_at}"></th>
-            <th th:text="#{labels.updated_at}"></th>
+            <th th:text="#{labels.trainer_id}"></th>
+            <th th:text="#{labels.trainer_email}"></th>
+            <th th:text="#{labels.status}"></th>
             <th th:text="#{labels.actions}"></th>
         </tr>
         </thead>
@@ -41,21 +39,17 @@
         <tr th:each="cycle : ${cycles.items}">
             <th th:text="${cycle.id}"></th>
             <td th:text="${cycle.name}"></td>
-            <td th:text="${cycle.description}"></td>
+            <td th:text="${cycle.clientId}"></td>
+            <td th:text="${cycle.clientEmail}"></td>
             <td th:text="${cycle.durationInDays}"></td>
-            <td th:text="${cycle.published} ? #{yes} : #{no}"></td>
             <td th:text="${cycle.price}"></td>
-            <td th:text="${#temporals.format(cycle.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
-            <td th:text="${#temporals.format(cycle.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+            <td th:text="${cycle.trainerId}"></td>
+            <td th:text="${cycle.trainerEmail}"></td>
+            <td th:text="${cycle.status.name}"></td>
             <td>
                 <a class="btn btn-primary btn-sm"
-                   th:href="@{/admin/cycle/edit/{id}(id=${cycle.id})}"
+                   th:href="@{/admin/cycle/change-status-trainer/{id}(id=${cycle.id})}"
                    th:text="#{buttons.edit}">Edit Cycle</a>
-                <form th:action="@{/admin/cycle/delete/{id}(id=${cycle.id})}" method="post"
-                      style="display:inline;">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button class="btn btn-danger btn-sm" type="submit" th:text="#{buttons.delete}">Delete</button>
-                </form>
             </td>
         </tr>
         </tbody>

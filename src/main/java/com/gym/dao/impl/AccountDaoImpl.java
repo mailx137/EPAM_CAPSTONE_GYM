@@ -352,4 +352,43 @@ public class AccountDaoImpl implements AccountDao, JdbcCleanup {
             cleanupResources(rs, stmt, conn, dataSource);
         }
     }
+
+    @Override
+    public List<Account> getAccountsByRole(String role) {
+        String sql = """
+                SELECT a.id, a.email, a.password, a.email_confirmed, a.blocked, a.created_at, a.updated_at
+                FROM accounts a
+                JOIN accounts_roles ar ON a.id = ar.account_id
+                JOIN roles r ON ar.role_id = r.id
+                WHERE r.name = ?
+                """;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, role);
+            rs = stmt.executeQuery();
+
+            List<Account> accounts = new ArrayList<>();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setId(rs.getLong("id"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setEmailConfirmed(rs.getBoolean("email_confirmed"));
+                account.setBlocked(rs.getBoolean("blocked"));
+                account.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                account.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+                accounts.add(account);
+            }
+            return accounts;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving accounts by role: " + role, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
 }

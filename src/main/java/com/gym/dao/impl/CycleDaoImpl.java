@@ -329,7 +329,7 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
         String sql = "SELECT c.id, c.name, c.duration_in_days, c.price, ace.trainer_id, trainer.email AS trainer_email, client.id AS client_id, client.email AS client_email, ace.status  " +
                 "FROM cycles c " +
                 "JOIN account_cycle_enrollments ace ON c.id = ace.cycle_id " +
-                "JOIN accounts trainer ON ace.trainer_id = trainer.id " +
+                "LEFT JOIN accounts trainer ON ace.trainer_id = trainer.id " +
                 "JOIN accounts client ON ace.account_id = client.id " +
                 "WHERE ace.status = ? " +
                 "ORDER BY c.id LIMIT ? OFFSET ?";

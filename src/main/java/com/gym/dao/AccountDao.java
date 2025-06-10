@@ -24,4 +24,6 @@ public interface AccountDao {
     void deleteById(long id);
 
     Optional<AccountWithRolesAndWallet> getAccountWithRolesAndWalletByEmail(String email);
+
+    List<Account> getAccountsByRole(String role);
 }

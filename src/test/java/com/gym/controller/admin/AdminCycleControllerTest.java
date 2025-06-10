@@ -6,6 +6,7 @@ import com.gym.dto.request.CycleFormDto;
 import com.gym.dto.response.ActiveCycleListDto;
 import com.gym.dto.response.Paginator;
 import com.gym.model.Cycle;
+import com.gym.service.AccountService;
 import com.gym.service.CycleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,9 +44,12 @@ public class AdminCycleControllerTest {
     @Mock
     private MessageSource messageSource;
 
+    @Mock
+    private AccountService accountService;
+
     @BeforeEach
     void setUp() {
-        cycleController = new AdminCycleController(cycleService, messageSource);
+        cycleController = new AdminCycleController(cycleService, messageSource, accountService);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(cycleController)
                 .build();
@@ -183,7 +187,12 @@ public class AdminCycleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/cycle/active-list"))
                 .andExpect(model().attributeExists("cycles"))
+                .andExpect(model().attributeExists("statusList"))
+                .andExpect(model().attributeExists("trainerList"))
+                .andExpect(model().attribute("statusList", instanceOf(List.class)))
+                .andExpect(model().attribute("trainerList", instanceOf(List.class)))
                 .andExpect(model().attribute("cycles", instanceOf(Paginator.class)));
         verify(cycleService, times(1)).getPaginatedActiveCyclesWithTrainer(anyInt(), anyInt());
+        verify(accountService, times(1)).getAllTrainersIdAndEmail();
     }
 }

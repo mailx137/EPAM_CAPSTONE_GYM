@@ -2,6 +2,7 @@ package com.gym.dao;
 
 
 import com.gym.dto.response.AccountWithRolesAndWallet;
+import com.gym.enums.RoleType;
 import com.gym.model.Account;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -138,5 +139,20 @@ public class AccountDaoTest extends AbstractDaoTestConfig {
         assertEquals(0, new BigDecimal("100.0").compareTo(account.getWalletBalance()));
 
         assertEquals(1L, account.getWalletId());
+    }
+
+    @Sql(statements = {
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (1, 'trainer1@example.com', 'password123')",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (2, 'trainer2@example.com', 'password123')",
+            "INSERT IGNORE INTO accounts (id, email, password) VALUES (3, 'test@test.com', 'password123')",
+            "INSERT IGNORE INTO roles (id, name) VALUES (1, 'TRAINER')",
+            "INSERT IGNORE INTO accounts_roles (account_id, role_id) VALUES (1, 1)",
+            "INSERT IGNORE INTO accounts_roles (account_id, role_id) VALUES (2, 1)",
+    })
+    @Test
+    void testGetAllTrainers() {
+        List<Account> trainers = accountDao.getAccountsByRole(RoleType.TRAINER.name());
+        assertNotNull(trainers);
+        assertEquals(2, trainers.size());
     }
 }
