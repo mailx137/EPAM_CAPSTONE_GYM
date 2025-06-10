@@ -4,6 +4,7 @@ import com.gym.dao.AccountCycleEnrollmentDao;
 import com.gym.dao.CycleDao;
 import com.gym.dto.request.CycleFormDto;
 import com.gym.dto.response.ActiveCycleListDto;
+import com.gym.dto.response.CycleForTrainerList;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.dto.response.Paginator;
 import com.gym.enums.AccountCycleEnrollmentStatus;
@@ -140,5 +141,17 @@ public class CycleService {
             throw new IllegalArgumentException("Trainer ID must be greater than 0 if provided");
         }
         cycleDao.assignTrainerToCycle(cycleId, trainerId);
+    }
+
+    public Paginator<CycleForTrainerList> getPaginatedCyclesByTrainerId(Integer page, Integer size, long trainerId) {
+        if (page == null || size == null || page < 1 || size < 1) {
+            throw new IllegalArgumentException("Page and size must be greater than 0");
+        }
+        return new Paginator<>(
+                cycleDao.getActiveCycleByTrainerIdCount(trainerId),
+                page,
+                size,
+                cycleDao.getCyclesByTrainerId(page, size, trainerId)
+        );
     }
 }

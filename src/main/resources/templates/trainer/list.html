@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{shared/layout}">
+
+<head>
+    <title th:text="#{titles.cycles}"></title>
+</head>
+
+<body>
+<section layout:fragment="content" class="m-5">
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+            <th th:text="#{labels.enrollment_id}"></th>
+            <th th:text="#{labels.cycle_id}"></th>
+            <th th:text="#{labels.client_id}"></th>
+            <th th:text="#{labels.trainer_id}"></th>
+            <th th:text="#{labels.client_email}"></th>
+            <th th:text="#{labels.cycle_name}"></th>
+            <th th:text="#{labels.cycle_description}"></th>
+            <th th:text="#{labels.duration_in_days}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cycle : ${cycles.items}">
+            <td th:text="${cycle.enrollmentId}"></td>
+            <td th:text="${cycle.cycleId}"></td>
+            <td th:text="${cycle.clientId}"></td>
+            <td th:text="${cycle.trainerId}"></td>
+            <td th:text="${cycle.clientEmail}"></td>
+            <td th:text="${cycle.cycleName}"></td>
+            <td th:text="${cycle.cycleDescription}"></td>
+            <td th:text="${cycle.cycleDurationInDays}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+
+</html>

@@ -3,6 +3,7 @@ package com.gym.dao.impl;
 import com.gym.dao.CycleDao;
 import com.gym.dao.util.JdbcCleanup;
 import com.gym.dto.response.ActiveCycleListDto;
+import com.gym.dto.response.CycleForTrainerList;
 import com.gym.dto.response.CycleWithEnrollmentDto;
 import com.gym.enums.AccountCycleEnrollmentStatus;
 import com.gym.model.Cycle;
@@ -413,6 +414,81 @@ public class CycleDaoImpl implements CycleDao, JdbcCleanup {
             }
         } catch (Exception e) {
             throw new RuntimeException("Error fetching active cycle count", e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public int getActiveCycleByTrainerIdCount(long trainerId) {
+        String sql = "SELECT COUNT(*) FROM account_cycle_enrollments WHERE trainer_id = ? AND status = 'ACTIVE'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, trainerId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching active cycle count for trainer id " + trainerId, e);
+        } finally {
+            cleanupResources(rs, stmt, conn, dataSource);
+        }
+    }
+
+    @Override
+    public List<CycleForTrainerList> getCyclesByTrainerId(int page, int size, long trainerId) {
+        String sql = "SELECT enrollment.id AS enrollment_id, " +
+                "c.id AS cycle_id, " +
+                "c.name AS cycle_name, " +
+                "c.description AS cycle_description, " +
+                "c.duration_in_days AS cycle_duration_in_days, " +
+                "enrollment.account_id AS client_id, " +
+                "enrollment.trainer_id, " +
+                "client.email AS client_email " +
+                "FROM account_cycle_enrollments enrollment " +
+                "JOIN cycles c ON enrollment.cycle_id = c.id " +
+                "JOIN accounts client ON enrollment.account_id = client.id " +
+                "WHERE enrollment.trainer_id = ? AND enrollment.status = 'ACTIVE' " +
+                "ORDER BY c.id LIMIT ? OFFSET ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DataSourceUtils.getConnection(dataSource);
+            stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, trainerId);
+            stmt.setInt(2, size);
+            stmt.setInt(3, (page - 1) * size);
+            rs = stmt.executeQuery();
+
+            List<CycleForTrainerList> cyclesForTrainer = new ArrayList<>();
+
+            while (rs.next()) {
+                CycleForTrainerList cycleForTrainer = new CycleForTrainerList();
+                cycleForTrainer.setEnrollmentId(rs.getLong("enrollment_id"));
+                cycleForTrainer.setCycleId(rs.getLong("cycle_id"));
+                cycleForTrainer.setCycleName(rs.getString("cycle_name"));
+                cycleForTrainer.setCycleDescription(rs.getString("cycle_description"));
+                cycleForTrainer.setCycleDurationInDays(rs.getInt("cycle_duration_in_days"));
+                cycleForTrainer.setClientId(rs.getLong("client_id"));
+                cycleForTrainer.setClientEmail(rs.getString("client_email"));
+                cycleForTrainer.setTrainerId(rs.getLong("trainer_id"));
+
+                cyclesForTrainer.add(cycleForTrainer);
+            }
+            return cyclesForTrainer;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching cycles for trainer with id " + trainerId, e);
         } finally {
             cleanupResources(rs, stmt, conn, dataSource);
         }

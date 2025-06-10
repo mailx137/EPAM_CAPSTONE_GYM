@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {WebConfig.class})
 public class AdminCycleControllerTest {
     private MockMvc mockMvc;
-    private AdminCycleController cycleController;
 
     @Mock
     private CycleService cycleService;
@@ -49,7 +48,7 @@ public class AdminCycleControllerTest {
 
     @BeforeEach
     void setUp() {
-        cycleController = new AdminCycleController(cycleService, messageSource, accountService);
+        AdminCycleController cycleController = new AdminCycleController(cycleService, messageSource, accountService);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(cycleController)
                 .build();
