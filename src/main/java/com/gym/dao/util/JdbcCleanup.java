@@ -11,7 +11,7 @@ import java.sql.Statement;
 public interface JdbcCleanup extends Loggable {
 
     default void closeQuietly(AutoCloseable resource) {
-        getLogger().error("ПИЗДА");
+    
         if (resource != null) {
             try {
                 resource.close();
